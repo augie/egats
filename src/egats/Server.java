@@ -7,7 +7,7 @@ import java.util.Map;
 
 /**
  *
- * @author Augie
+ * @author Augie Hill - augman85@gmail.com
  */
 public class Server {
 
@@ -17,8 +17,9 @@ public class Server {
     // The flag map maps the flag to the expected number of inputs for that flag
     private static final Map<String, Integer> FLAG_MAP = new HashMap<String, Integer>();
     private static final Map<String, String> FLAG_ALTERNATIVES_MAP = new HashMap<String, String>();
-    private RequestListeningThread listener = null;
-    private ResponseSendingThread responder = null;
+    private final RequestListeningThread listener;
+    private final RequestProcessorExecutor executor;
+    private final EGATProcessExecutor egatExecutor;
 
     static {
         // Help flag
@@ -33,21 +34,27 @@ public class Server {
     public Server() {
         // Create and start a request listening thread and a response sending thread
         listener = new RequestListeningThread(this);
-        responder = new ResponseSendingThread(this);
+        executor = new RequestProcessorExecutor(this);
+        egatExecutor = new EGATProcessExecutor(this);
     }
 
     public Server(int port) {
         // Create and start a request listening thread and a response sending thread
         listener = new RequestListeningThread(this, port);
-        responder = new ResponseSendingThread(this);
+        executor = new RequestProcessorExecutor(this);
+        egatExecutor = new EGATProcessExecutor(this);
     }
 
     public final RequestListeningThread getListener() {
         return listener;
     }
 
-    public final ResponseSendingThread getResponder() {
-        return responder;
+    public final RequestProcessorExecutor getExecutor() {
+        return executor;
+    }
+
+    public final EGATProcessExecutor getEGATExecutor() {
+        return egatExecutor;
     }
 
     public final void logException(Exception e) {
@@ -57,7 +64,6 @@ public class Server {
     public final void start() {
         // Start listening and responding to requests.
         listener.start();
-        responder.start();
     }
 
     public static final void main(String[] args) throws Exception {
