@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  *
- * @author Augie
+ * @author Augie Hill - augman85@gmail.com
  */
 public class RequestProcessorExecutor extends ThreadPoolExecutor {
 

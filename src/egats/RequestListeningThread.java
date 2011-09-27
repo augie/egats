@@ -19,6 +19,8 @@ public class RequestListeningThread extends Thread {
     }
 
     public RequestListeningThread(Server server, Integer port) {
+        setName("Request Listening Thread");
+        setPriority(Thread.MAX_PRIORITY);
         this.server = server;
         this.port = port;
     }
