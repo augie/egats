@@ -9,7 +9,7 @@ import java.net.Socket;
 
 /**
  *
- * @author Augie
+ * @author Augie Hill - augman85@gmail.com
  */
 public class IOUtil {
 
