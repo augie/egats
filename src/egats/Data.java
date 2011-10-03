@@ -15,7 +15,7 @@ public class Data {
     public static final Gson GSON = new Gson();
     public static Mongo MONGO;
     public static DB EGATS;
-    public static DBCollection EGAT_PROCESSES, INPUT_OBJECTS, OUTPUT_OBJECTS;
+    public static DBCollection EGAT_PROCESSES, OBJECTS;
 
     static {
         try {
@@ -24,8 +24,7 @@ public class Data {
             EGATS = MONGO.getDB("egats");
 
             EGAT_PROCESSES = EGATS.getCollection("egat_processes");
-            INPUT_OBJECTS = EGATS.getCollection("input_objects");
-            OUTPUT_OBJECTS = EGATS.getCollection("output_objects");
+            OBJECTS = EGATS.getCollection("objects");
         } catch (Exception e) {
             // Log
             // TODO

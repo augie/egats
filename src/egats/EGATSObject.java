@@ -6,30 +6,27 @@ import com.mongodb.DBObject;
  *
  * @author Augie Hill - augman85@gmail.com
  */
-public class EGATProcess extends DataObject implements Runnable {
+public class EGATSObject extends DataObject {
 
-    public EGATProcess() throws Exception {
+    public EGATSObject() throws Exception {
         this(true);
     }
 
-    private EGATProcess(boolean createInDatabase) throws Exception {
+    private EGATSObject(boolean createInDatabase) throws Exception {
         if (createInDatabase) {
-            Data.insert(Data.EGAT_PROCESSES, this);
+            Data.insert(Data.OBJECTS, this);
         }
-    }
-
-    public final void run() {
     }
 
     public final String getJSON() {
         return Data.GSON.toJson(this);
     }
 
-    public static final EGATProcess convert(DBObject o) throws Exception {
+    public static final EGATSObject convert(DBObject o) throws Exception {
         if (o == null) {
             return null;
         }
-        EGATProcess n = new EGATProcess(false);
+        EGATSObject n = new EGATSObject(false);
         for (String s : o.keySet()) {
             n.put(s, o.get(s));
         }

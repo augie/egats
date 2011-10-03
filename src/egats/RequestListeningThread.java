@@ -59,15 +59,20 @@ public class RequestListeningThread extends Thread {
                         Future f = null;
                         try {
                             f = server.getExecutor().submit(processor);
+                        } catch (Exception e) {
+                            // Notify the user that an exception occurred.
+                            processor.couldNotProcess(new Response(Response.STATUS_ERROR, e.getMessage()));
                         } finally {
                             // The process could not be submitted for execution, so notify the user.
                             if (f == null) {
-                                processor.couldNotProcess();
+                                processor.couldNotProcess(new Response(Response.STATUS_ERROR, "Your request could not be submitted."));
                             }
                         }
                     } catch (Exception e) {
                         // Log
                         server.logException(e);
+                        // Try to notify the user that there was a problem
+                        // TODO
                     }
                 }
             } catch (Exception e) {
