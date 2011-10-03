@@ -14,21 +14,18 @@ public class RequestListeningThread extends Thread {
     private final Server server;
     private final Integer port;
 
-    public RequestListeningThread(Server server) {
-        this(server, null);
+    static {
+        Flags.setDefault(Flags.PORT, DEFAULT_PORT);
     }
 
-    public RequestListeningThread(Server server, Integer port) {
+    public RequestListeningThread(Server server) {
         setName("Request Listening Thread");
         setPriority(Thread.MAX_PRIORITY);
         this.server = server;
-        this.port = port;
+        this.port = server.getFlags().getInt(Flags.PORT);
     }
 
     public final int getPort() {
-        if (port == null) {
-            return DEFAULT_PORT;
-        }
         return port;
     }
 

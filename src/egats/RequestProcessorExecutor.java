@@ -11,16 +11,21 @@ import java.util.concurrent.TimeUnit;
  */
 public class RequestProcessorExecutor extends ThreadPoolExecutor {
 
-    public static final int THREAD_COUNT = 2;
-    public static final int QUEUE_SIZE = 100;
+    public static final int DEFAULT_THREAD_COUNT = 2;
+    public static final int DEFAULT_QUEUE_SIZE = 100;
     private final Server server;
 
-    public RequestProcessorExecutor(Server server) {
-        this(server, THREAD_COUNT, QUEUE_SIZE);
+    static {
+        Flags.setDefault(Flags.REQUEST_PROCESSING_THREADS, DEFAULT_THREAD_COUNT);
+        Flags.setDefault(Flags.REQUEST_PROCESSING_QUEUE, DEFAULT_QUEUE_SIZE);
     }
 
-    public RequestProcessorExecutor(Server server, int threadCount, int queueSize) {
-        super(threadCount, threadCount, 100, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(queueSize));
+    public RequestProcessorExecutor(Server server) {
+        super(server.getFlags().getInt(Flags.REQUEST_PROCESSING_THREADS),
+                server.getFlags().getInt(Flags.REQUEST_PROCESSING_THREADS),
+                100,
+                TimeUnit.SECONDS,
+                new LinkedBlockingQueue<Runnable>(server.getFlags().getInt(Flags.REQUEST_PROCESSING_QUEUE)));
         this.server = server;
     }
 
