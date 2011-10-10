@@ -6,8 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.StringTokenizer;
 
 /**
  *
@@ -29,107 +28,53 @@ public class RequestProcessor implements Runnable {
         BufferedReader br = null;
         OutputStream os = null;
         try {
+            // Open the input streams
             is = socket.getInputStream();
             isr = new InputStreamReader(is);
             br = new BufferedReader(isr);
 
-            // Expecting HTTP requests
-            String line, request = null, verb = null, noun = null, body = "";
-            Map<String, String> headers = new HashMap<String, String>();
-            boolean readBody = false;
-            while ((line = br.readLine()) != null) {
-                // This is the first line of the request.
-                if (request == null) {
-                    // Parse the request of the form "[verb] [object] [protocol]"
-                    request = line;
-                    String[] requestParts = request.split(" ");
-                    verb = requestParts[0];
-                    noun = requestParts[1];
-                } // Read content
-                else if (!line.equals("")) {
-                    // This is the body of the request..
-                    if (readBody) {
-                        body += line;
-                    } // These are the headers of the request.
-                    else {
-                        String name = "", value = "";
-                        int indexOfDelim = line.indexOf(':');
-                        if (indexOfDelim >= 0) {
-                            name = line.substring(0, indexOfDelim).trim();
-                            value = line.substring(indexOfDelim + 1).trim();
-                        }
-                        headers.put(name, value);
-                    }
-                } // POST has a blank line separating the headers from the body
-                else if (!verb.equals("POST") || readBody) {
-                    break;
-                } else {
-                    readBody = true;
-                }
+            // Open the output stream
+            os = socket.getOutputStream();
+
+            // Read in the request
+            StringBuffer requestBuffer = new StringBuffer();
+            while (br.ready()) {
+                requestBuffer.append(br.readLine() + "\n");
             }
 
-            // Process the request
-            os = socket.getOutputStream();
-            if (verb.equals("GET")) {
-                // Treated as a ping
-                if (noun.equals("/")) {
-                    os.write(new Response().getBytes());
-                } // Mirrors the request back to the requester. Human-oriented.
-                else if (noun.equals("/mirror")) {
-                    os.write(String.valueOf(request + "\n").getBytes());
-                    for (String name : headers.keySet()) {
-                        os.write(String.valueOf(name + ": " + headers.get(name) + "\n").getBytes());
-                    }
-                } // Responds with the statistics of the server. Human-oriented.
-                else if (noun.equals("/stats")) {
-                    processStatsRequest(os);
-                } // Response with the current status of an EGAT process
-                else if (noun.startsWith("/p/")) {
-                    String id = noun.substring(3);
-                    EGATProcess process = EGATProcessCache.get(id);
-                    Response response = null;
-                    if (process == null) {
-                        response = new Response(Response.STATUS_NOT_FOUND,
-                                "The EGAT process you requested was not found. The body of this message contains the ID requested.",
-                                id);
-                    } else {
-                        response = new Response(Response.STATUS_OK,
-                                "The body of this message contains the requested EGAT Process object.",
-                                process.getJSON());
-                    }
-                    os.write(response.getBytes());
-                } // Response with an object of some type.
-                else if (noun.startsWith("/o/")) {
-                    String id = noun.substring(3);
-                    EGATSObject object = EGATSObjectCache.get(id);
-                    Response response = null;
-                    if (object == null) {
-                        response = new Response(Response.STATUS_NOT_FOUND,
-                                "The object you requested was not found. The body of this message contains the ID requested.",
-                                id);
-                    } else {
-                        response = new Response(Response.STATUS_OK,
-                                "The body of this message contains the requested object.",
-                                object.getJSON());
-                    }
-                    os.write(response.getBytes());
-                } else {
-                    os.write(new Response(Response.STATUS_ERROR, "Object not recognized: " + noun).getBytes());
-                }
+            // Parse the request
+            String request = requestBuffer.toString();
+            StringTokenizer requestTokenizer = new StringTokenizer(request, "\n");
+
+            // Sometimes receive a blank request?
+            if (requestTokenizer.countTokens() == 0) {
+                return;
+            }
+            String header = requestTokenizer.nextToken();
+
+            // Parse the header
+            StringTokenizer queryTokenizer = new StringTokenizer(header);
+            String method = queryTokenizer.nextToken();
+            String object = queryTokenizer.nextToken();
+
+            // Process the request according to the method
+            if (method.equals("GET")) {
+                processGetRequest(os, object, header, requestTokenizer);
+            } else if (method.equals("POST")) {
+                processPostRequest(os, object, requestTokenizer);
             } else {
-                os.write(new Response(Response.STATUS_ERROR, "HTTP verb not implemented: " + verb).getBytes());
+                os.write(new Response(Response.STATUS_ERROR, "HTTP method not implemented: " + method).getBytes());
             }
         } catch (Exception e) {
             // Log
             server.logException(e);
-            // Try to write a response
+            // Notify the user
             if (os != null) {
                 try {
                     os.write(new Response(Response.STATUS_ERROR, e.getMessage()).getBytes());
                 } catch (Exception ee) {
                     // Log
-                    server.logException(e);
-                    // TODO
+                    server.logException(ee);
                 }
             }
         } finally {
@@ -139,6 +84,61 @@ public class RequestProcessor implements Runnable {
             IOUtil.safeClose(os);
             IOUtil.safeClose(socket);
         }
+    }
+
+    private void processGetRequest(OutputStream os, String object, String header, StringTokenizer requestTokenizer) throws Exception {
+        // Treated as a ping
+        if (object.equals("/")) {
+            os.write(new Response().getBytes());
+        } // Mirrors the request back to the requester. Human-oriented.
+        else if (object.equals("/mirror")) {
+            StringBuffer output = new StringBuffer();
+            output.append(header + "\n");
+            int count = requestTokenizer.countTokens();
+            for (int i = 0; i < count; i++) {
+                output.append(requestTokenizer.nextToken() + "\n");
+            }
+            os.write(output.toString().getBytes());
+        } // Responds with the statistics of the server. Human-oriented.
+        else if (object.equals("/stats")) {
+            processStatsRequest(os);
+        } // Response with the current status of an EGAT process
+        else if (object.startsWith("/p/")) {
+            String id = object.substring(3);
+            EGATProcess process = EGATProcessCache.get(id);
+            Response response = null;
+            if (process == null) {
+                response = new Response(Response.STATUS_NOT_FOUND,
+                        "The EGAT process you requested was not found. The body of this message contains the ID requested.",
+                        id);
+            } else {
+                response = new Response(Response.STATUS_OK,
+                        "The body of this message contains the requested EGAT Process object.",
+                        process.getJSON());
+            }
+            os.write(response.getBytes());
+        } // Response with an object of some type.
+        else if (object.startsWith("/o/")) {
+            String id = object.substring(3);
+            EGATSObject o = EGATSObjectCache.get(id);
+            Response response = null;
+            if (o == null) {
+                response = new Response(Response.STATUS_NOT_FOUND,
+                        "The object you requested was not found. The body of this message contains the ID requested.",
+                        id);
+            } else {
+                response = new Response(Response.STATUS_OK,
+                        "The body of this message contains the requested object.",
+                        o.getJSON());
+            }
+            os.write(response.getBytes());
+        } else {
+            os.write(new Response(Response.STATUS_ERROR, "Object not recognized: " + object).getBytes());
+        }
+    }
+
+    private void processPostRequest(OutputStream os, String object, StringTokenizer requestTokenizer) {
+        throw new RuntimeException("POST handling not yet implemented.");
     }
 
     public void processStatsRequest(OutputStream os) throws IOException {
@@ -156,7 +156,6 @@ public class RequestProcessor implements Runnable {
         InputStreamReader isr = null;
         BufferedReader br = null;
         OutputStream os = null;
-
         try {
             // Don't care about the input
             try {
