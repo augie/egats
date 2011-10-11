@@ -3,6 +3,7 @@ package egats;
 import com.mongodb.BasicDBObject;
 import java.util.HashMap;
 import java.util.Map;
+import org.bson.types.ObjectId;
 
 /**
  * Need to find a way to do these caches using generics.
@@ -19,8 +20,7 @@ public class EGATProcessCache {
         }
         
         // get from the database
-        BasicDBObject query = new BasicDBObject();
-        query.put(EGATProcess.ATTR_ID, id);
+        BasicDBObject query = new BasicDBObject(EGATSObject.ATTR_ID, new ObjectId(id));
 
         // Convert the result to a Java object
         EGATProcess o = EGATProcess.convert(Data.EGAT_PROCESSES.findOne(query));
