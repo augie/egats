@@ -8,12 +8,18 @@ import com.mongodb.DBObject;
  */
 public class EGATProcess extends DataObject implements Runnable {
 
+    public static final String STATUS_SUBMITTED = "Submitted";
+    private String status = STATUS_SUBMITTED;
+    private long created = System.currentTimeMillis();
+
     public EGATProcess() throws Exception {
         this(true);
     }
 
     private EGATProcess(boolean createInDatabase) throws Exception {
         if (createInDatabase) {
+            put("status", status);
+            put("created", created);
             Data.insert(Data.EGAT_PROCESSES, this);
         }
     }
