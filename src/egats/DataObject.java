@@ -10,7 +10,7 @@ public class DataObject extends BasicDBObject {
 
     public static final String ATTR_ID = "_id";
 
-    public String getID() {
+    public final String getID() {
         return getString(ATTR_ID);
     }
 }

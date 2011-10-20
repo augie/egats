@@ -20,9 +20,7 @@ public class Data {
     static {
         try {
             MONGO = new Mongo("localhost", 27017);
-
             EGATS = MONGO.getDB("egats");
-
             EGAT_PROCESSES = EGATS.getCollection("egat_processes");
             OBJECTS = EGATS.getCollection("objects");
         } catch (Exception e) {
