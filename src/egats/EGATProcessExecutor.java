@@ -24,6 +24,10 @@ public class EGATProcessExecutor extends ThreadPoolExecutor {
         this.server = server;
     }
 
+    public Server getServer() {
+        return server;
+    }
+
     public synchronized Future submit(EGATProcess ep) {
         // Do not use the blocking functionality of the blocking queue
         if (getQueue().remainingCapacity() == 0) {

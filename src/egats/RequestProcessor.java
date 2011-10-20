@@ -147,7 +147,7 @@ public class RequestProcessor implements Runnable {
             EGATProcess process = null;
             Response response = null;
             try {
-                process = EGATProcessCache.get(id);
+                process = EGATProcess.CACHE.get(id);
                 // Check if we found it
                 if (process == null) {
                     response = new Response(Response.STATUS_CODE_NOT_FOUND,
@@ -173,7 +173,7 @@ public class RequestProcessor implements Runnable {
             EGATSObject o = null;
             Response response = null;
             try {
-                o = EGATSObjectCache.get(id);
+                o = EGATSObject.CACHE.get(id);
                 if (o == null) {
                     response = new Response(Response.STATUS_CODE_NOT_FOUND,
                             "The object you requested was not found. The body of this message contains the ID requested.",
@@ -231,7 +231,7 @@ public class RequestProcessor implements Runnable {
             Response response = null;
             try {
                 // Submit the new process
-                process = new EGATProcess();
+                process = new EGATProcess(true);
                 // Make a response
                 response = new Response(Response.STATUS_CODE_OK,
                         "Your EGAT process has been created. The body of this message contains the ID of the new process.",
@@ -248,7 +248,7 @@ public class RequestProcessor implements Runnable {
             Response response = null;
             try {
                 // Submit the new process
-                egatsObject = new EGATSObject();
+                egatsObject = new EGATSObject(true);
                 // Make a response
                 response = new Response(Response.STATUS_CODE_OK,
                         "Your EGATS object has been created. The body of this message contains the ID of the new object.",
