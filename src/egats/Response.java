@@ -51,6 +51,19 @@ public class Response extends Object {
     }
 
     @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Response)) {
+            return false;
+        }
+        return toString().equals(((Response) o).toString());
+    }
+
+    @Override
     public String toString() {
         return Data.GSON.toJson(this);
     }

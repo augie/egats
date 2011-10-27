@@ -42,6 +42,10 @@ public class Flags {
         FLAG_ALTERNATIVES_MAP.put("request-processing-queue", REQUEST_PROCESSING_QUEUE);
     }
 
+    public Flags() {
+        this(new String[0]);
+    }
+
     public Flags(String[] args) {
         final int argsLength = args.length;
         for (int i = 0; i < argsLength; i++) {
@@ -104,6 +108,12 @@ public class Flags {
 
     public final String getString(String flag) {
         return get(flag).get(0);
+    }
+
+    public static final void setDefault(String flag, Boolean value) {
+        List<String> args = new LinkedList<String>();
+        args.add(String.valueOf(value));
+        DEFAULTS.put(flag, args);
     }
 
     public static final void setDefault(String flag, Integer value) {

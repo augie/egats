@@ -29,6 +29,10 @@ public class RequestProcessorExecutor extends ThreadPoolExecutor {
         this.server = server;
     }
 
+    public Server getServer() {
+        return server;
+    }
+
     public synchronized Future submit(RequestProcessor rp) {
         // Do not use the blocking functionality of the blocking queue
         if (getQueue().remainingCapacity() == 0) {

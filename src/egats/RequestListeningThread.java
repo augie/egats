@@ -13,6 +13,8 @@ public class RequestListeningThread extends Thread {
     public static final int DEFAULT_PORT = 55555;
     private final Server server;
     private final Integer port;
+    private ServerSocket ss;
+    private boolean run = true;
 
     static {
         Flags.setDefault(Flags.PORT, DEFAULT_PORT);
@@ -25,6 +27,13 @@ public class RequestListeningThread extends Thread {
         this.port = server.getFlags().getInt(Flags.PORT);
     }
 
+    public final void close() {
+        // Stop the listener
+        run = false;
+        // Close the server listener so it returns
+        IOUtil.safeClose(ss);
+    }
+
     public final int getPort() {
         return port;
     }
@@ -35,8 +44,7 @@ public class RequestListeningThread extends Thread {
 
     @Override
     public final void run() {
-        ServerSocket ss = null;
-        while (true) {
+        while (run) {
             try {
                 // Do we need to create a new socket?
                 if (ss == null || ss.isClosed()) {
@@ -48,11 +56,15 @@ public class RequestListeningThread extends Thread {
                     ss = new ServerSocket(getPort());
                 }
                 // Listen for requests
-                while (true) {
+                while (run) {
                     // It's possible that a socket could be accepted but never processed. Need some utility that will clean up sockets
                     try {
                         // Waits until a request is made
                         Socket s = ss.accept();
+                        // Check if the s was returned for some other reason
+                        if (s == null) {
+                            continue;
+                        }
                         // Create a request processor to handle the client request.
                         RequestProcessor processor = new RequestProcessor(server, s);
                         // Submit the processor for execution

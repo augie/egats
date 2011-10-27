@@ -1,7 +1,5 @@
 package egats;
 
-import com.mongodb.DBObject;
-
 /**
  *
  * @author Augie Hill - augman85@gmail.com
@@ -18,18 +16,7 @@ public class EGATProcess extends DataObject implements Runnable {
     private Long createTime = System.currentTimeMillis();
     private Long startTime;
     private Long finishTime;
-
-    public EGATProcess() throws Exception {
-        this(false);
-    }
-
-    public EGATProcess(boolean createInDatabase) throws Exception {
-        if (createInDatabase) {
-            put("status", status);
-            put("created", createTime);
-            Data.insert(Data.EGAT_PROCESSES, this);
-        }
-    }
+    private String methodPath;
 
     public final void run() {
         try {
@@ -38,7 +25,9 @@ public class EGATProcess extends DataObject implements Runnable {
             setStartTime(System.currentTimeMillis());
             save();
 
-            // Run the process
+            // Load the inputs
+
+            // Execute the process
 
             // All done
             setStatus(STATUS_COMPLETED);
@@ -76,16 +65,5 @@ public class EGATProcess extends DataObject implements Runnable {
 
     public final String getJSON() {
         return Data.GSON.toJson(this);
-    }
-
-    public static final EGATProcess convert(DBObject o) throws Exception {
-        if (o == null) {
-            return null;
-        }
-        EGATProcess n = new EGATProcess(false);
-        for (String s : o.keySet()) {
-            n.put(s, o.get(s));
-        }
-        return n;
     }
 }
