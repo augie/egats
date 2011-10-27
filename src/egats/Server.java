@@ -10,12 +10,17 @@ public class Server {
     private final RequestProcessorExecutor executor;
     private final EGATProcessExecutor egatExecutor;
     private final Flags flags;
+    private boolean testing = false;
 
     public Server(Flags flags) {
         this.flags = flags;
         listener = new RequestListeningThread(this);
         executor = new RequestProcessorExecutor(this);
         egatExecutor = new EGATProcessExecutor(this);
+    }
+
+    public final void close() {
+        listener.close();
     }
 
     public final Flags getFlags() {
@@ -34,8 +39,14 @@ public class Server {
         return egatExecutor;
     }
 
+    public final void setIsTesting(boolean testing) {
+        this.testing = testing;
+    }
+
     public final void logException(Exception e) {
-        e.printStackTrace();
+        if (!testing) {
+            e.printStackTrace();
+        }
     }
 
     public final void start() {

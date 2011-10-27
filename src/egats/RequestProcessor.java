@@ -1,5 +1,6 @@
 package egats;
 
+import com.google.gson.JsonParseException;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -230,15 +231,24 @@ public class RequestProcessor implements Runnable {
             EGATProcess process = null;
             Response response = null;
             try {
-                // Submit the new process
-                process = new EGATProcess(true);
+                // Create and submit the new process
+                process = Data.GSON.fromJson(body.toString(), EGATProcess.class);
+                // Create a new entry in the database
+                Data.insert(Data.EGAT_PROCESSES, process);
                 // Make a response
                 response = new Response(Response.STATUS_CODE_OK,
                         "Your EGAT process has been created. The body of this message contains the ID of the new process.",
                         process.getID());
-            } catch (Exception e) {
+            } catch (JsonParseException e) {
+                // Log
+                server.logException(e);
                 response = new Response(Response.STATUS_CODE_ERROR,
-                        "COuld not create EGAT process.");
+                        "Malformed process object.", e.getMessage());
+            } catch (Exception e) {
+                // Log
+                server.logException(e);
+                response = new Response(Response.STATUS_CODE_ERROR,
+                        "Could not create EGAT process.");
             }
             // Respond with the new ID
             sendResponse(response);
@@ -247,13 +257,17 @@ public class RequestProcessor implements Runnable {
             EGATSObject egatsObject = null;
             Response response = null;
             try {
-                // Submit the new process
-                egatsObject = new EGATSObject(true);
+                // Create a new object from the JSON
+                egatsObject = Data.GSON.fromJson(body.toString(), EGATSObject.class);
+                // Create a new entry in the database
+                Data.insert(Data.OBJECTS, egatsObject);
                 // Make a response
                 response = new Response(Response.STATUS_CODE_OK,
                         "Your EGATS object has been created. The body of this message contains the ID of the new object.",
                         egatsObject.getID());
             } catch (Exception e) {
+                // Log
+                server.logException(e);
                 response = new Response(Response.STATUS_CODE_ERROR,
                         "Could not create object.");
             }
