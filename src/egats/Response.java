@@ -38,6 +38,14 @@ public class Response extends Object {
         this.body = body;
     }
 
+    public final String getBody() {
+        return body;
+    }
+
+    public final String getMessage() {
+        return message;
+    }
+
     public final int getStatusCode() {
         return statusCode;
     }
@@ -66,5 +74,9 @@ public class Response extends Object {
     @Override
     public String toString() {
         return Data.GSON.toJson(this);
+    }
+
+    public static final Response fromJSON(String json) {
+        return Data.GSON.fromJson(json, Response.class);
     }
 }

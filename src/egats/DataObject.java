@@ -13,4 +13,8 @@ public class DataObject extends BasicDBObject {
     public final String getID() {
         return getString(ATTR_ID);
     }
+
+    protected final void setID(String id) {
+        put(ATTR_ID, id);
+    }
 }

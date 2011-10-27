@@ -10,7 +10,10 @@ public class Server {
     private final RequestProcessorExecutor executor;
     private final EGATProcessExecutor egatExecutor;
     private final Flags flags;
-    private boolean testing = false;
+
+    static {
+        Flags.setDefault(Flags.HOST, "localhost");
+    }
 
     public Server(Flags flags) {
         this.flags = flags;
@@ -27,6 +30,22 @@ public class Server {
         return flags;
     }
 
+    public final String getHost() {
+        return flags.getString(Flags.HOST);
+    }
+
+    public final int getPort() {
+        return flags.getInt(Flags.PORT);
+    }
+
+    public final String getURL() {
+        return "http://" + getHost() + ":" + getPort();
+    }
+
+    public final String getURL(String path) {
+        return getURL() + path;
+    }
+
     public final RequestListeningThread getListener() {
         return listener;
     }
@@ -39,12 +58,8 @@ public class Server {
         return egatExecutor;
     }
 
-    public final void setIsTesting(boolean testing) {
-        this.testing = testing;
-    }
-
     public final void logException(Exception e) {
-        if (!testing) {
+        if (!Flags.TESTING) {
             e.printStackTrace();
         }
     }

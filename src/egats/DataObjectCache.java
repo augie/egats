@@ -41,6 +41,10 @@ public class DataObjectCache<T extends DataObject> {
         return o;
     }
 
+    public final void insert(String id, T t) {
+        cache.put(id, new SoftReference<T>(t));
+    }
+
     public final T convert(DBObject o) throws Exception {
         if (o == null) {
             return null;
