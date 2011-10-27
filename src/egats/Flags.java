@@ -11,8 +11,11 @@ import java.util.Map;
  */
 public class Flags {
 
+    // Are we only testing?
+    public static boolean TESTING = false;
     // Define flags
     public static final String HELP = "h";
+    public static final String HOST = "H";
     public static final String PORT = "p";
     public static final String REQUEST_PROCESSING_THREADS = "rpt";
     public static final String REQUEST_PROCESSING_QUEUE = "rpq";
@@ -28,6 +31,10 @@ public class Flags {
         // Help flag
         FLAG_MAP.put(HELP, 0);
         FLAG_ALTERNATIVES_MAP.put("help", HELP);
+
+        // Host flag
+        FLAG_MAP.put(HOST, 1);
+        FLAG_ALTERNATIVES_MAP.put("host", HOST);
 
         // Port flag
         FLAG_MAP.put(PORT, 1);
@@ -110,13 +117,7 @@ public class Flags {
         return get(flag).get(0);
     }
 
-    public static final void setDefault(String flag, Boolean value) {
-        List<String> args = new LinkedList<String>();
-        args.add(String.valueOf(value));
-        DEFAULTS.put(flag, args);
-    }
-
-    public static final void setDefault(String flag, Integer value) {
+    public static final void setDefault(String flag, Object value) {
         List<String> args = new LinkedList<String>();
         args.add(String.valueOf(value));
         DEFAULTS.put(flag, args);

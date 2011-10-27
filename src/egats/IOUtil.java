@@ -96,4 +96,16 @@ public class IOUtil {
             // TODO
         }
     }
+
+    public static final void safeClose(Server s) {
+        if (s == null) {
+            return;
+        }
+        try {
+            s.close();
+        } catch (Exception e) {
+            // Log
+            // TODO
+        }
+    }
 }

@@ -1,12 +1,9 @@
 package egats;
 
-import com.google.gson.JsonParseException;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,10 +17,7 @@ public class RequestProcessor implements Runnable {
 
     private final Server server;
     private final Socket socket;
-    private InputStream is = null;
-    private InputStreamReader isr = null;
     private BufferedReader br = null;
-    private OutputStream os = null;
     private DataOutputStream dos = null;
 
     public RequestProcessor(Server server, Socket socket) {
@@ -78,21 +72,15 @@ public class RequestProcessor implements Runnable {
     }
 
     private void open() throws IOException {
-        // Open the input streams
-        is = socket.getInputStream();
-        isr = new InputStreamReader(is);
-        br = new BufferedReader(isr);
-        // Open the output streams
-        os = socket.getOutputStream();
-        dos = new DataOutputStream(os);
+        // Open the input stream
+        br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        // Open the output stream
+        dos = new DataOutputStream(socket.getOutputStream());
     }
 
     private void safeClose() {
         IOUtil.safeClose(br);
-        IOUtil.safeClose(isr);
-        IOUtil.safeClose(is);
         IOUtil.safeClose(dos);
-        IOUtil.safeClose(os);
         IOUtil.safeClose(socket);
     }
 
@@ -114,7 +102,7 @@ public class RequestProcessor implements Runnable {
     }
 
     private final void sendResponse(int code, String codeName, String contentType, String response) throws Exception {
-        if (os == null || dos == null) {
+        if (dos == null) {
             return;
         }
         dos.write(("HTTP/1.1 " + code + " " + codeName + "\r\n").getBytes());
@@ -232,18 +220,11 @@ public class RequestProcessor implements Runnable {
             Response response = null;
             try {
                 // Create and submit the new process
-                process = Data.GSON.fromJson(body.toString(), EGATProcess.class);
-                // Create a new entry in the database
-                Data.insert(Data.EGAT_PROCESSES, process);
+                process = EGATProcess.create(body.toString());
                 // Make a response
                 response = new Response(Response.STATUS_CODE_OK,
                         "Your EGAT process has been created. The body of this message contains the ID of the new process.",
                         process.getID());
-            } catch (JsonParseException e) {
-                // Log
-                server.logException(e);
-                response = new Response(Response.STATUS_CODE_ERROR,
-                        "Malformed process object.", e.getMessage());
             } catch (Exception e) {
                 // Log
                 server.logException(e);
@@ -258,9 +239,7 @@ public class RequestProcessor implements Runnable {
             Response response = null;
             try {
                 // Create a new object from the JSON
-                egatsObject = Data.GSON.fromJson(body.toString(), EGATSObject.class);
-                // Create a new entry in the database
-                Data.insert(Data.OBJECTS, egatsObject);
+                egatsObject = EGATSObject.create(body.toString());
                 // Make a response
                 response = new Response(Response.STATUS_CODE_OK,
                         "Your EGATS object has been created. The body of this message contains the ID of the new object.",
@@ -269,7 +248,7 @@ public class RequestProcessor implements Runnable {
                 // Log
                 server.logException(e);
                 response = new Response(Response.STATUS_CODE_ERROR,
-                        "Could not create object.");
+                        "Could not create object.", e.getMessage());
             }
             // Respond with the new ID
             sendResponse(response);

@@ -24,7 +24,7 @@ public class RequestListeningThread extends Thread {
         setName("Request Listening Thread");
         setPriority(Thread.MAX_PRIORITY);
         this.server = server;
-        this.port = server.getFlags().getInt(Flags.PORT);
+        this.port = server.getPort();
     }
 
     public final void close() {

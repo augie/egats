@@ -12,6 +12,7 @@ import com.mongodb.WriteResult;
  */
 public class Data {
 
+    private static int TEST_ID = 0;
     public static final Gson GSON = new Gson();
     public static Mongo MONGO;
     public static DB EGATS;
@@ -29,7 +30,15 @@ public class Data {
         }
     }
 
-    public static final void insert(DBCollection c, DataObject o) throws Exception {
+    public static final void save(DBCollection c, DataObject o) throws Exception {
+        // Do not do anything if testing
+        if (Flags.TESTING) {
+            // Fake an ID if necessary
+            if (!o.containsField(DataObject.ATTR_ID)) {
+                o.put(DataObject.ATTR_ID, String.valueOf(TEST_ID++));
+            }
+            return;
+        }
         // Save to the database
         WriteResult r = c.save(o);
         // Check for error
