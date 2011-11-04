@@ -1,5 +1,6 @@
 package egats;
 
+import com.mongodb.BasicDBList;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 import java.lang.reflect.Method;
@@ -16,6 +17,7 @@ public class EGATProcess extends DataObject implements Runnable {
     public static final String STATUS_RUNNING = "Running";
     public static final String STATUS_COMPLETED = "Completed";
     public static final String STATUS_FAILED = "Failed";
+    private transient Server server;
     private String status;
     private String exceptionMessage;
     private Long createTime;
@@ -25,9 +27,6 @@ public class EGATProcess extends DataObject implements Runnable {
     private String[] args;
     private String outputID;
 
-    public EGATProcess() {
-    }
-
     public final void run() {
         try {
             // Set up
@@ -36,8 +35,8 @@ public class EGATProcess extends DataObject implements Runnable {
             save();
 
             // Check the args
-            String[] mArgs = null;
-            if (args == null) {
+            String[] mArgs = args;
+            if (mArgs == null) {
                 mArgs = new String[0];
             }
             // Get the objects from the cache
@@ -53,8 +52,8 @@ public class EGATProcess extends DataObject implements Runnable {
             Object[] argObjs = new Object[argEObjs.length];
             for (int i = 0; i < argEObjs.length; i++) {
                 String classPath = argEObjs[i].getClassPath().replaceAll("/", ".").trim();
-                argCObjs[i] = EGATProcess.class.getClassLoader().loadClass(classPath);
-                argObjs[i] = Data.GSON.fromJson(argEObjs[i].getObject(), argCObjs[i]);
+                argCObjs[i] = server.getClassLoader().getClass(classPath);
+                argObjs[i] = argCObjs[i].cast(Data.GSON.fromJson(argEObjs[i].getObject(), argCObjs[i]));
             }
 
             // Check the method
@@ -64,19 +63,27 @@ public class EGATProcess extends DataObject implements Runnable {
             // Convert all '/' to '.'
             String cMethodPath = methodPath.replaceAll("/", ".").trim();
             String methodClassPath = cMethodPath.substring(0, cMethodPath.lastIndexOf("."));
-            Class methodClass = EGATProcess.class.getClassLoader().loadClass(methodClassPath);
+            Class methodClass = server.getClassLoader().getClass(methodClassPath);
             String methodName = cMethodPath.substring(cMethodPath.lastIndexOf(".") + 1);
             Method method = methodClass.getMethod(methodName, argCObjs);
             if (method == null) {
                 throw new Exception("Unknown method name and argument class combination.");
             }
 
-            // Execute the method
-            Object output = method.invoke(argObjs);
+            // Execute the static method (need to create a dummy instance even though it's a static method)
+            Object output = method.invoke(methodClass.newInstance(), argObjs);
 
-            // Create an EGATObject from the output
-            EGATSObject o = EGATSObject.create(Data.GSON.toJson(output));
-            setOutputID(o.getID());
+            // Create an EGATSObject from the output
+            EGATSObject o = new EGATSObject();
+            o.setClassPath(method.getReturnType().getName());
+            o.setObject(Data.GSON.toJson(output));
+            // Save it
+            o.save();
+            // Add it to the cache
+            EGATSObject.CACHE.insert(o.getID(), o);
+
+            // Save the ID of the output object
+            setOutputID(o.getID().intern());
 
             // All done
             setStatus(STATUS_COMPLETED);
@@ -84,6 +91,8 @@ public class EGATProcess extends DataObject implements Runnable {
             e.printStackTrace();
             if (e instanceof NullPointerException) {
                 setExceptionMessage("Null pointer encountered.");
+            } else if (e instanceof NoSuchMethodException) {
+                setExceptionMessage("No such method.");
             } else {
                 setExceptionMessage(e.getMessage());
             }
@@ -98,6 +107,14 @@ public class EGATProcess extends DataObject implements Runnable {
             // Log
             // TODO
         }
+    }
+
+    public final Server getServer() {
+        return server;
+    }
+
+    public final void setServer(Server server) {
+        this.server = server;
     }
 
     public final String[] getArgs() {
@@ -149,7 +166,7 @@ public class EGATProcess extends DataObject implements Runnable {
         return outputID;
     }
 
-    public final void setOutputID(String outputID) {
+    private final void setOutputID(String outputID) {
         this.outputID = outputID;
         put("outputID", outputID);
     }
@@ -199,19 +216,36 @@ public class EGATProcess extends DataObject implements Runnable {
     }
 
     public static final EGATProcess create(String json) throws Exception {
+        // Read the DBObject (attributes must be set separately)
         EGATProcess o = CACHE.convert((DBObject) JSON.parse(json));
+        // Set the attributes the user can set
+        o.setMethodPath(o.getString("methodPath"));
+        o.setArgs(((BasicDBList) o.get("args")).toArray(new String[0]));
         // Set everything the client can't set
-        o.setID(null);
+        o.removeField(DataObject.ATTR_ID);
         o.setCreateTime(System.currentTimeMillis());
-        o.setOutputID(null);
+        o.removeField("outputID");
         o.setStatus(STATUS_CREATED);
-        o.setExceptionMessage(null);
-        o.setStartTime(null);
-        o.setFinishTime(null);
+        o.removeField("exceptionMessage");
+        o.removeField("startTime");
+        o.removeField("finishTime");
         // Create a new entry in the database
         o.save();
         // Add it to the cache now because it will probably be referenced soon
         CACHE.insert(o.getID(), o);
+        return o;
+    }
+
+    public static final EGATProcess read(String json) throws Exception {
+        EGATProcess o = CACHE.convert((DBObject) JSON.parse(json));
+        o.setMethodPath(o.getString("methodPath"));
+        o.setArgs(((BasicDBList) o.get("args")).toArray(new String[0]));
+        o.setCreateTime(o.getLong("createTime"));
+        o.setOutputID(o.getString("outputID"));
+        o.setStatus(o.getString("status"));
+        o.setExceptionMessage(o.getString("exceptionMessage"));
+        o.setCreateTime(o.getLong("startTime"));
+        o.setFinishTime(o.getLong("finishTime"));
         return o;
     }
 }

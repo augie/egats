@@ -71,20 +71,20 @@ public class RequestProcessor implements Runnable {
         }
     }
 
-    private void open() throws IOException {
+    private final void open() throws IOException {
         // Open the input stream
         br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         // Open the output stream
         dos = new DataOutputStream(socket.getOutputStream());
     }
 
-    private void safeClose() {
+    private final void safeClose() {
         IOUtil.safeClose(br);
         IOUtil.safeClose(dos);
         IOUtil.safeClose(socket);
     }
 
-    private StringBuffer readInput() throws IOException {
+    private final StringBuffer readInput() throws IOException {
         StringBuffer requestBuffer = new StringBuffer();
         String line;
         while ((line = br.readLine()) != null && !line.equals("")) {
@@ -219,17 +219,23 @@ public class RequestProcessor implements Runnable {
             EGATProcess process = null;
             Response response = null;
             try {
-                // Create and submit the new process
+                // Create the new process
                 process = EGATProcess.create(body.toString());
+                process.setServer(server);
+                // Submit the new process for execution
+                if (server.getEGATExecutor().submit(process) == null) {
+                    // TODO: need to execute the process somehow. Occasional checks for processes to queue from the DB?
+                }
                 // Make a response
                 response = new Response(Response.STATUS_CODE_OK,
                         "Your EGAT process has been created. The body of this message contains the ID of the new process.",
                         process.getID());
             } catch (Exception e) {
+                e.printStackTrace();
                 // Log
                 server.logException(e);
                 response = new Response(Response.STATUS_CODE_ERROR,
-                        "Could not create EGAT process.");
+                        "Could not create EGAT process.", e.getMessage());
             }
             // Respond with the new ID
             sendResponse(response);

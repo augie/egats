@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 
 /**
  *
- * @author Augie
+ * @author Augie Hill - augman85@gmail.com
  */
 public class EGATSTestCase extends TestCase {
 

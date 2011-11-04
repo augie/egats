@@ -1,5 +1,6 @@
 package egats;
 
+import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.Future;
@@ -87,6 +88,11 @@ public class RequestListeningThread extends Thread {
                         // TODO
                     }
                 }
+            } catch (BindException e) {
+                // Log exception
+                server.logException(e);
+                // No more running
+                run = false;
             } catch (Exception e) {
                 // Log exception
                 server.logException(e);
