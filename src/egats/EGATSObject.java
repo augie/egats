@@ -14,14 +14,6 @@ public class EGATSObject extends DataObject {
     private String classPath;
     private String object;
 
-    public EGATSObject() {
-    }
-
-    public EGATSObject(String object) {
-        setObject(object);
-        setCreateTime(System.currentTimeMillis());
-    }
-
     public final Long getCreateTime() {
         return createTime;
     }
@@ -76,11 +68,28 @@ public class EGATSObject extends DataObject {
     }
 
     public static final EGATSObject create(String json) throws Exception {
-        EGATSObject o = new EGATSObject(json);
+        // Read the DBObject (attributes must be set separately)
+        EGATSObject o = CACHE.convert((DBObject) JSON.parse(json));
+        // Set the attributes the user can set
+        o.setClassPath(o.getString("classPath"));
+        o.setObject(o.getString("object"));
+        // Set everything the client can't set
+        o.removeField(DataObject.ATTR_ID);
+        o.setCreateTime(System.currentTimeMillis());
         // Create a new entry in the database
         o.save();
         // Add it to the cache now because it will probably be referenced soon
         CACHE.insert(o.getID(), o);
+        return o;
+    }
+
+    public static final EGATSObject read(String json) throws Exception {
+        EGATSObject o = CACHE.convert((DBObject) JSON.parse(json));
+        o.setClassPath(o.getString("classPath"));
+        o.setObject(o.getString("object"));
+        if (o.containsField("createTime")) {
+            o.setCreateTime(o.getLong("createTime"));
+        }
         return o;
     }
 }

@@ -15,11 +15,6 @@ public class EGATProcessExecutor extends ThreadPoolExecutor {
     public static final int QUEUE_SIZE = 100;
     private final Server server;
 
-    static {
-        // On startup, queue processes to be executed from the database
-        // TODO
-    }
-
     public EGATProcessExecutor(Server server) {
         this(server, THREAD_COUNT, QUEUE_SIZE);
     }

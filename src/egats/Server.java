@@ -9,6 +9,7 @@ public class Server {
     private final RequestListeningThread listener;
     private final RequestProcessorExecutor executor;
     private final EGATProcessExecutor egatExecutor;
+    private final EGATClassLoader egatClassLoader;
     private final Flags flags;
 
     static {
@@ -20,6 +21,7 @@ public class Server {
         listener = new RequestListeningThread(this);
         executor = new RequestProcessorExecutor(this);
         egatExecutor = new EGATProcessExecutor(this);
+        egatClassLoader = new EGATClassLoader(this);
     }
 
     public final void close() {
@@ -58,6 +60,10 @@ public class Server {
         return egatExecutor;
     }
 
+    public final EGATClassLoader getClassLoader() {
+        return egatClassLoader;
+    }
+
     public final void logException(Exception e) {
         if (!Flags.TESTING) {
             e.printStackTrace();
@@ -81,8 +87,16 @@ public class Server {
             System.exit(0);
         }
 
+        // The library directory must be set.
+        if (!flags.contains(Flags.LIB)) {
+            throw new Exception("Library directory flag not set.");
+        }
+
         // Start the server using the given flags
         Server s = new Server(flags);
+        // Load the library
+        s.getClassLoader().load();
+        // Start the server
         s.start();
     }
 }

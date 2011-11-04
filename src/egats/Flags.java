@@ -16,6 +16,7 @@ public class Flags {
     // Define flags
     public static final String HELP = "h";
     public static final String HOST = "H";
+    public static final String LIB = "l";
     public static final String PORT = "p";
     public static final String REQUEST_PROCESSING_THREADS = "rpt";
     public static final String REQUEST_PROCESSING_QUEUE = "rpq";
@@ -35,6 +36,11 @@ public class Flags {
         // Host flag
         FLAG_MAP.put(HOST, 1);
         FLAG_ALTERNATIVES_MAP.put("host", HOST);
+
+        // Host flag
+        FLAG_MAP.put(LIB, 1);
+        FLAG_ALTERNATIVES_MAP.put("lib", LIB);
+        FLAG_ALTERNATIVES_MAP.put("library", LIB);
 
         // Port flag
         FLAG_MAP.put(PORT, 1);

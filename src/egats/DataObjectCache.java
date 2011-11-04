@@ -24,6 +24,10 @@ public class DataObjectCache<T extends DataObject> {
     }
 
     public final T get(String id) throws Exception {
+        if (id == null) {
+            return null;
+        }
+
         // Is the object in the cache?
         if (cache.containsKey(id) && cache.get(id).get() != null) {
             return cache.get(id).get();
