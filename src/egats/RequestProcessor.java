@@ -130,6 +130,21 @@ public class RequestProcessor implements Runnable {
         } // Responds with the statistics of the server. Human-oriented.
         else if (object.startsWith("/stats")) {
             throw new RuntimeException("TODO");
+        } // Responds with the statistics of the server. Human-oriented.
+        else if (object.startsWith("/reloadlibs")) {
+            Response response = null;
+            try {
+                server.getClassLoader().reload();
+                response = new Response(Response.STATUS_CODE_OK, "The libraries were reloaded.");
+            } catch (Exception e) {
+                // Log
+                // TODO
+                // Tell them we couldn't find it
+                response = new Response(Response.STATUS_CODE_ERROR,
+                        "There was a problem reloading the libraries.",
+                        e.getMessage());
+            }
+            sendResponse(response);
         } // Response with the current status of an EGAT process
         else if (object.startsWith("/p/")) {
             String id = object.substring(3);

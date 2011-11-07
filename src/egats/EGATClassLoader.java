@@ -23,7 +23,14 @@ public class EGATClassLoader {
         return server;
     }
 
-    public final void load() throws Exception {
+    public synchronized final void reload() throws Exception {
+        // Clear out the current library (Does there need to be more clean-up here?)
+        loaders.clear();
+        // Reload all of the libraries
+        load();
+    }
+
+    public synchronized final void load() throws Exception {
         if (!server.getFlags().contains(Flags.LIB)) {
             throw new Exception("Library flag is not set.");
         }
@@ -53,7 +60,7 @@ public class EGATClassLoader {
         }
     }
 
-    public final Class getClass(String path) throws ClassNotFoundException {
+    public synchronized final Class getClass(String path) throws ClassNotFoundException {
         // Is it something basic?
         Class c = null;
         try {
