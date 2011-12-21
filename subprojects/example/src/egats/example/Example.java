@@ -11,11 +11,11 @@ import egats.example.serverside.ExampleServerSide;
  */
 public class Example {
 
-    public static final String HOST = "deepmaize2.eecs.umich.edu";
+    public static final String HOST = "egat.eecs.umich.edu";
     //public static final String HOST = "localhost";
     public static final String PORT = "80";
 
-    public static final void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
         long startTime = System.currentTimeMillis();
 
         // Create the arguments

@@ -20,6 +20,7 @@ public class Flags {
     public static final String PORT = "p";
     public static final String REQUEST_PROCESSING_THREADS = "rpt";
     public static final String REQUEST_PROCESSING_QUEUE = "rpq";
+    public static final String WORK = "w";
     // The flag map maps the flag to the expected number of inputs for that flag
     private static final Map<String, Integer> FLAG_MAP = new HashMap<String, Integer>();
     private static final Map<String, String> FLAG_ALTERNATIVES_MAP = new HashMap<String, String>();
@@ -37,7 +38,7 @@ public class Flags {
         FLAG_MAP.put(HOST, 1);
         FLAG_ALTERNATIVES_MAP.put("host", HOST);
 
-        // Host flag
+        // Library flag
         FLAG_MAP.put(LIB, 1);
         FLAG_ALTERNATIVES_MAP.put("lib", LIB);
         FLAG_ALTERNATIVES_MAP.put("library", LIB);
@@ -53,6 +54,10 @@ public class Flags {
         // Request processing threads flag
         FLAG_MAP.put(REQUEST_PROCESSING_QUEUE, 1);
         FLAG_ALTERNATIVES_MAP.put("request-processing-queue", REQUEST_PROCESSING_QUEUE);
+
+        // Work flag
+        FLAG_MAP.put(WORK, 1);
+        FLAG_ALTERNATIVES_MAP.put("work", WORK);
     }
 
     public Flags() {
@@ -123,7 +128,7 @@ public class Flags {
         return get(flag).get(0);
     }
 
-    public static final void setDefault(String flag, Object value) {
+    public static void setDefault(String flag, Object value) {
         List<String> args = new LinkedList<String>();
         args.add(String.valueOf(value));
         DEFAULTS.put(flag, args);

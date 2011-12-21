@@ -34,6 +34,16 @@ public class EGATProcess extends DataObject implements Runnable {
             setStartTime(System.currentTimeMillis());
             save();
 
+            // Check the method
+            if (methodPath == null) {
+                throw new Exception("Method path is not set.");
+            }
+            // Convert all '/' to '.'
+            String cMethodPath = methodPath.replaceAll("/", ".").trim();
+            String methodClassPath = cMethodPath.substring(0, cMethodPath.lastIndexOf("."));
+            Class methodClass = server.getClassLoader().getClass(methodClassPath);
+            String methodName = cMethodPath.substring(cMethodPath.lastIndexOf(".") + 1);
+
             // Check the args
             String[] mArgs = args;
             if (mArgs == null) {
@@ -56,15 +66,7 @@ public class EGATProcess extends DataObject implements Runnable {
                 argObjs[i] = argCObjs[i].cast(Data.GSON.fromJson(argEObjs[i].getObject(), argCObjs[i]));
             }
 
-            // Check the method
-            if (methodPath == null) {
-                throw new Exception("Method path is not set.");
-            }
-            // Convert all '/' to '.'
-            String cMethodPath = methodPath.replaceAll("/", ".").trim();
-            String methodClassPath = cMethodPath.substring(0, cMethodPath.lastIndexOf("."));
-            Class methodClass = server.getClassLoader().getClass(methodClassPath);
-            String methodName = cMethodPath.substring(cMethodPath.lastIndexOf(".") + 1);
+            // Instantiate the method to be run
             Method method = methodClass.getMethod(methodName, argCObjs);
             if (method == null) {
                 throw new Exception("Unknown method name and argument class combination.");
@@ -130,7 +132,7 @@ public class EGATProcess extends DataObject implements Runnable {
         return createTime;
     }
 
-    private final void setCreateTime(Long time) {
+    private void setCreateTime(Long time) {
         this.createTime = time;
         put("createTime", time);
     }
@@ -139,7 +141,7 @@ public class EGATProcess extends DataObject implements Runnable {
         return exceptionMessage;
     }
 
-    private final void setExceptionMessage(String message) {
+    private void setExceptionMessage(String message) {
         this.exceptionMessage = message;
         put("exceptionMessage", message);
     }
@@ -148,7 +150,7 @@ public class EGATProcess extends DataObject implements Runnable {
         return finishTime;
     }
 
-    private final void setFinishTime(Long time) {
+    private void setFinishTime(Long time) {
         this.finishTime = time;
         put("finishTime", time);
     }
@@ -166,7 +168,7 @@ public class EGATProcess extends DataObject implements Runnable {
         return outputID;
     }
 
-    private final void setOutputID(String outputID) {
+    private void setOutputID(String outputID) {
         this.outputID = outputID;
         put("outputID", outputID);
     }
@@ -175,7 +177,7 @@ public class EGATProcess extends DataObject implements Runnable {
         return startTime;
     }
 
-    private final void setStartTime(Long time) {
+    private void setStartTime(Long time) {
         this.startTime = time;
         put("startTime", time);
     }
@@ -184,7 +186,7 @@ public class EGATProcess extends DataObject implements Runnable {
         return status;
     }
 
-    private final void setStatus(String status) {
+    private void setStatus(String status) {
         this.status = status;
         put("status", status);
     }

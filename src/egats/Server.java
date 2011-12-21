@@ -10,6 +10,7 @@ public class Server {
     private final RequestProcessorExecutor executor;
     private final EGATProcessExecutor egatExecutor;
     private final EGATClassLoader egatClassLoader;
+    private final WorkFileManager workFileManager;
     private final Flags flags;
 
     static {
@@ -22,6 +23,7 @@ public class Server {
         executor = new RequestProcessorExecutor(this);
         egatExecutor = new EGATProcessExecutor(this);
         egatClassLoader = new EGATClassLoader(this);
+        workFileManager = new WorkFileManager(this);
     }
 
     public final void close() {
@@ -45,6 +47,9 @@ public class Server {
     }
 
     public final String getURL(String path) {
+        if (!path.startsWith("/")) {
+            path = "/" + path;
+        }
         return getURL() + path;
     }
 
@@ -75,7 +80,7 @@ public class Server {
         listener.start();
     }
 
-    public static final void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
         // Process the arguments
         Flags flags = new Flags(args);
 
@@ -89,7 +94,7 @@ public class Server {
 
         // The library directory must be set.
         if (!flags.contains(Flags.LIB)) {
-            throw new Exception("Library directory flag not set.");
+            throw new Exception("Library directory flag is not set.");
         }
 
         // Start the server using the given flags

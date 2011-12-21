@@ -14,9 +14,9 @@ import org.bson.types.ObjectId;
  */
 public class DataObjectCache<T extends DataObject> {
 
-    private final Map<String, SoftReference<T>> cache = new HashMap<String, SoftReference<T>>();
-    private final DBCollection dc;
-    private final Class c;
+    private Map<String, SoftReference<T>> cache = new HashMap<String, SoftReference<T>>();
+    private DBCollection dc;
+    private Class c;
 
     public DataObjectCache(DBCollection dc, Class<T> c) {
         this.dc = dc;

@@ -12,8 +12,8 @@ import java.util.concurrent.Future;
 public class RequestListeningThread extends Thread {
 
     public static final int DEFAULT_PORT = 55555;
-    private final Server server;
-    private final Integer port;
+    private Server server;
+    private Integer port;
     private ServerSocket ss;
     private boolean run = true;
 

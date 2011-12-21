@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class EGATClassLoader {
 
-    private Server server;
+    private final Server server;
     private Map<String, ClassLoader> loaders = new HashMap<String, ClassLoader>();
 
     public EGATClassLoader(Server server) {

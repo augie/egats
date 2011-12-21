@@ -24,7 +24,7 @@ public class EGATProcessExecutor extends ThreadPoolExecutor {
         this.server = server;
     }
 
-    public Server getServer() {
+    public final Server getServer() {
         return server;
     }
 

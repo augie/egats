@@ -12,8 +12,8 @@ public class Response extends Object {
     public static final int STATUS_CODE_ERROR = 300;
     public static final String STATUS_NOT_FOUND = "Not Found";
     public static final int STATUS_CODE_NOT_FOUND = 404;
-    private final String status, message, body;
-    private final int statusCode;
+    private String status, message, body;
+    private int statusCode;
 
     public Response() {
         this(STATUS_CODE_OK, null, null);
