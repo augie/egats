@@ -13,7 +13,7 @@ public class RequestProcessorExecutor extends ThreadPoolExecutor {
 
     public static final int DEFAULT_THREAD_COUNT = 2;
     public static final int DEFAULT_QUEUE_SIZE = 100;
-    private final Server server;
+    private Server server;
 
     static {
         Flags.setDefault(Flags.REQUEST_PROCESSING_THREADS, DEFAULT_THREAD_COUNT);

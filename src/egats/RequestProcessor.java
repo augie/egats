@@ -15,10 +15,17 @@ import java.util.StringTokenizer;
  */
 public class RequestProcessor implements Runnable {
 
+    private static final Map<String, String> STATIC_RESPONSES = new HashMap<String, String>();
     private final Server server;
     private final Socket socket;
     private BufferedReader br = null;
     private DataOutputStream dos = null;
+
+    static {
+        STATIC_RESPONSES.put("/", IOUtil.safeGetResourceAsString("/egats/html/index.html"));
+        STATIC_RESPONSES.put("/new-process", IOUtil.safeGetResourceAsString("/egats/html/new-process.html"));
+        STATIC_RESPONSES.put("/processes", IOUtil.safeGetResourceAsString("/egats/html/processes.html"));
+    }
 
     public RequestProcessor(Server server, Socket socket) {
         this.server = server;
@@ -31,7 +38,7 @@ public class RequestProcessor implements Runnable {
             open();
 
             // Read in the request
-            StringBuffer requestBuffer = readInput();
+            StringBuilder requestBuffer = readInput();
 
             // Parse the request
             String request = requestBuffer.toString();
@@ -71,37 +78,42 @@ public class RequestProcessor implements Runnable {
         }
     }
 
-    private final void open() throws IOException {
+    private void open() throws IOException {
         // Open the input stream
         br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         // Open the output stream
         dos = new DataOutputStream(socket.getOutputStream());
     }
 
-    private final void safeClose() {
+    private void safeClose() {
         IOUtil.safeClose(br);
         IOUtil.safeClose(dos);
         IOUtil.safeClose(socket);
     }
 
-    private final StringBuffer readInput() throws IOException {
-        StringBuffer requestBuffer = new StringBuffer();
+    private StringBuilder readInput() throws IOException {
+        StringBuilder requestBuilder = new StringBuilder();
         String line;
         while ((line = br.readLine()) != null && !line.equals("")) {
-            requestBuffer.append(line + "\n");
+            requestBuilder.append(line);
+            requestBuilder.append("\n");
         }
-        return requestBuffer;
+        return requestBuilder;
     }
 
-    private final void sendResponse(Response response) throws Exception {
+    private void sendResponse(Response response) throws Exception {
         sendResponse(response.getStatusCode(), response.getStatus(), "text/json", response.toString());
     }
 
-    private final void sendResponse(String response) throws Exception {
+    private void sendResponse(String response) throws Exception {
         sendResponse(Response.STATUS_CODE_OK, Response.STATUS_OK, "text/plain", response);
     }
 
-    private final void sendResponse(int code, String codeName, String contentType, String response) throws Exception {
+    private void sendResponse(String response, String type) throws Exception {
+        sendResponse(Response.STATUS_CODE_OK, Response.STATUS_OK, type, response);
+    }
+
+    private void sendResponse(int code, String codeName, String contentType, String response) throws Exception {
         if (dos == null) {
             return;
         }
@@ -114,22 +126,21 @@ public class RequestProcessor implements Runnable {
         dos.write(response.getBytes());
     }
 
-    private final void processGetRequest(String object, String header, StringTokenizer requestTokenizer) throws Exception {
-        // Treated as a ping
-        if (object.equals("/")) {
-            sendResponse(new Response());
+    private void processGetRequest(String object, String header, StringTokenizer requestTokenizer) throws Exception {
+        // Static HTML pages
+        if (STATIC_RESPONSES.containsKey(object)) {
+            sendResponse(STATIC_RESPONSES.get(object), "text/html");
         } // Mirrors the request back to the requester. Human-oriented.
         else if (object.startsWith("/mirror")) {
-            StringBuffer output = new StringBuffer();
-            output.append(header + "\n");
+            StringBuilder output = new StringBuilder();
+            output.append(header);
+            output.append("\n");
             int count = requestTokenizer.countTokens();
             for (int i = 0; i < count; i++) {
-                output.append(requestTokenizer.nextToken() + "\n");
+                output.append(requestTokenizer.nextToken());
+                output.append("\n");
             }
             sendResponse(output.toString());
-        } // Responds with the statistics of the server. Human-oriented.
-        else if (object.startsWith("/stats")) {
-            throw new RuntimeException("TODO");
         } // Responds with the statistics of the server. Human-oriented.
         else if (object.startsWith("/reloadlibs")) {
             Response response = null;
@@ -201,7 +212,7 @@ public class RequestProcessor implements Runnable {
         }
     }
 
-    private final void processPostRequest(String object, String header, StringTokenizer requestTokenizer) throws Exception {
+    private void processPostRequest(String object, String header, StringTokenizer requestTokenizer) throws Exception {
         // Read in request headers
         Map<String, String> headers = new HashMap<String, String>();
         int headerCount = requestTokenizer.countTokens();
@@ -212,22 +223,24 @@ public class RequestProcessor implements Runnable {
 
         // Read in the POST body
         int contentLength = Integer.valueOf(headers.get("content-length"));
-        StringBuffer body = new StringBuffer();
+        StringBuilder body = new StringBuilder();
         for (int i = 0; i < contentLength; i++) {
             body.append((char) br.read());
         }
 
-        // Treated as a ping
-        if (object.equals("/")) {
-            sendResponse(new Response());
-        } // Mirrors the request back to the requester. Human-oriented.
-        else if (object.startsWith("/mirror")) {
-            StringBuffer output = new StringBuffer();
-            output.append(header + "\n");
+        // Mirrors the request back to the requester. Human-oriented.
+        if (object.startsWith("/mirror")) {
+            StringBuilder output = new StringBuilder();
+            output.append(header);
+            output.append("\n");
             for (String key : headers.keySet()) {
-                output.append(key + ": " + headers.get(key) + "\n");
+                output.append(key);
+                output.append(": ");
+                output.append(headers.get(key));
+                output.append("\n");
             }
-            output.append("\n" + body);
+            output.append("\n");
+            output.append(body);
             sendResponse(output.toString());
         } // Create a new process
         else if (object.startsWith("/p")) {

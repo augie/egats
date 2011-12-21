@@ -14,7 +14,7 @@ import java.net.Socket;
  */
 public class IOUtil {
 
-    public static final void safeClose(InputStream is) {
+    public static void safeClose(InputStream is) {
         if (is == null) {
             return;
         }
@@ -26,7 +26,7 @@ public class IOUtil {
         }
     }
 
-    public static final void safeClose(Reader r) {
+    public static void safeClose(Reader r) {
         if (r == null) {
             return;
         }
@@ -38,7 +38,7 @@ public class IOUtil {
         }
     }
 
-    public static final void safeClose(OutputStream os) {
+    public static void safeClose(OutputStream os) {
         if (os == null) {
             return;
         }
@@ -56,7 +56,7 @@ public class IOUtil {
         }
     }
 
-    public static final void safeClose(Writer w) {
+    public static void safeClose(Writer w) {
         if (w == null) {
             return;
         }
@@ -74,7 +74,7 @@ public class IOUtil {
         }
     }
 
-    public static final void safeClose(Socket s) {
+    public static void safeClose(Socket s) {
         if (s == null) {
             return;
         }
@@ -86,7 +86,7 @@ public class IOUtil {
         }
     }
 
-    public static final void safeClose(ServerSocket ss) {
+    public static void safeClose(ServerSocket ss) {
         if (ss == null) {
             return;
         }
@@ -98,7 +98,7 @@ public class IOUtil {
         }
     }
 
-    public static final void safeClose(Server s) {
+    public static void safeClose(Server s) {
         if (s == null) {
             return;
         }

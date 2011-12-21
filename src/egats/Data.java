@@ -30,7 +30,7 @@ public class Data {
         }
     }
 
-    public static final void save(DBCollection c, DataObject o) throws Exception {
+    public static void save(DBCollection c, DataObject o) throws Exception {
         // Do not do anything if testing
         if (Flags.TESTING) {
             // Fake an ID if necessary

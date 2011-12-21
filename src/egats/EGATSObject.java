@@ -18,7 +18,7 @@ public class EGATSObject extends DataObject {
         return createTime;
     }
 
-    private final void setCreateTime(Long time) {
+    private void setCreateTime(Long time) {
         this.createTime = time;
         put("createTime", time);
     }
@@ -67,7 +67,7 @@ public class EGATSObject extends DataObject {
         return getJSON();
     }
 
-    public static final EGATSObject create(String json) throws Exception {
+    public static EGATSObject create(String json) throws Exception {
         // Read the DBObject (attributes must be set separately)
         EGATSObject o = CACHE.convert((DBObject) JSON.parse(json));
         // Set the attributes the user can set
@@ -83,7 +83,7 @@ public class EGATSObject extends DataObject {
         return o;
     }
 
-    public static final EGATSObject read(String json) throws Exception {
+    public static EGATSObject read(String json) throws Exception {
         EGATSObject o = CACHE.convert((DBObject) JSON.parse(json));
         o.setClassPath(o.getString("classPath"));
         o.setObject(o.getString("object"));
