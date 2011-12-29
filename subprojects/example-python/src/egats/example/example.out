@@ -1,0 +1,53 @@
+command: ./Analysis.py -r 1e-4 -d 1e-3 ../testbed_games/IBRP/IBRP.json
+
+input game = /Users/bryce/Desktop/testbed_games/IBRP/IBRP.json 
+RoleSymmetricGame:
+    roles: CLIENTS, ISP_INTRODUCERS, ROOT_INTRODUCERS, SERVERS
+    counts:
+        1x ISP_INTRODUCERS
+        1x SERVERS
+        3x CLIENTS
+        1x ROOT_INTRODUCERS
+    strategies:
+        ISP_INTRODUCERS:
+            attenuated_feedback_policy
+            compliant
+            oblivious
+        SERVERS:
+            attenuated_feedback_policy
+            compliant
+            oblivious
+        CLIENTS:
+            attenuated_feedback_policy
+            compliant
+            compliant_sensor
+            oblivious
+        ROOT_INTRODUCERS:
+            attenuated_feedback_policy
+            compliant
+            oblivious
+payoff data for 540 out of 540 profiles 
+
+
+strategies removed by IEDS:
+{'ISP_INTRODUCERS': ['compliant']} 
+
+
+1 exact pure strategy Nash equilibria:
+{'ISP_INTRODUCERS': (1x'oblivious'), 'SERVERS': (1x'oblivious'), 'CLIENTS': (2x'compliant', 1x'compliant_sensor'), 'ROOT_INTRODUCERS': (1x'attenuated_feedback_policy')} 
+
+minimum regret pure profile: {'ISP_INTRODUCERS': (1x'oblivious'), 'SERVERS': (1x'oblivious'), 'CLIENTS': (2x'compliant', 1x'compliant_sensor'), 'ROOT_INTRODUCERS': (1x'attenuated_feedback_policy')} 
+regret = -5.11333399964 
+
+
+cliques:
+input game is maximal
+
+
+
+clique 1 : {'ISP_INTRODUCERS': ('attenuated_feedback_policy', 'oblivious'), 'SERVERS': ('attenuated_feedback_policy', 'compliant', 'oblivious'), 'CLIENTS': ('attenuated_feedback_policy', 'compliant', 'compliant_sensor', 'oblivious'), 'ROOT_INTRODUCERS': ('attenuated_feedback_policy', 'compliant', 'oblivious')} 
+
+no approximate equilibria with regret at most 0.0001
+lowest regret symmetric mixed profile found by RD:
+{'ISP_INTRODUCERS': {oblivious:100.0%}, 'CLIENTS': {compliant:93.8%, compliant_sensor:4.7%, oblivious:1.5%}, 'ROOT_INTRODUCERS': {attenuated_feedback_policy:12.8%, oblivious:87.2%}, 'SERVERS': {oblivious:100.0%}}
+	clique regret:		0.0225442827214
