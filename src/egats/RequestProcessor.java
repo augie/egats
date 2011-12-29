@@ -145,7 +145,7 @@ public class RequestProcessor implements Runnable {
         else if (object.startsWith("/reloadlibs")) {
             Response response = null;
             try {
-                server.getClassLoader().reload();
+                server.getToolkit().reload();
                 response = new Response(Response.STATUS_CODE_OK, "The libraries were reloaded.");
             } catch (Exception e) {
                 // Log

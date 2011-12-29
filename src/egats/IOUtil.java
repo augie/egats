@@ -1,6 +1,8 @@
 package egats;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -36,10 +38,30 @@ public class IOUtil {
      * @throws IOException
      */
     public static String getResourceAsString(String resource) throws IOException {
+        return readInputStream(IOUtil.class.getResourceAsStream(resource));
+    }
+
+    /**
+     * 
+     * @param file
+     * @return
+     * @throws IOException
+     */
+    public static String readFile(File file) throws IOException {
+        return readInputStream(new FileInputStream(file));
+    }
+
+    /**
+     * 
+     * @param is
+     * @return
+     * @throws Exception
+     */
+    public static String readInputStream(InputStream is) throws IOException {
         StringBuilder resourceBuilder = new StringBuilder();
         BufferedReader br = null;
         try {
-            br = new BufferedReader(new InputStreamReader(IOUtil.class.getResourceAsStream(resource)));
+            br = new BufferedReader(new InputStreamReader(is));
             boolean first = true;
             String line = null;
             while ((line = br.readLine()) != null) {

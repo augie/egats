@@ -76,8 +76,8 @@ public class Example {
                 throw new Exception("Problem checking process progress on server: " + response);
             }
             egatProcess = EGATProcess.read(response.getBody());
-            if (egatProcess.getFinishTime() != null) {
-                System.out.println("Process is not finished yet. Waiting 100 ms.");
+            if (egatProcess.getFinishTime() == null) {
+                System.out.println("Process is not finished yet. Waiting 100 ms. Total time " + (System.currentTimeMillis() - startTime) + " ms");
             }
         } while (egatProcess.getFinishTime() == null);
 
