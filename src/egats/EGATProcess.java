@@ -79,8 +79,8 @@ public class EGATProcess extends DataObject implements Runnable {
                 Process p = Runtime.getRuntime().exec(command.toString());
 
                 // Stream the output amd error in to a buffer
-                StreamToFileThread outThread = new StreamToFileThread(p.getInputStream(), buffer);
-                StreamToFileThread errThread = new StreamToFileThread(p.getErrorStream(), buffer);
+                StreamToBufferThread outThread = new StreamToBufferThread(p.getInputStream(), buffer);
+                StreamToBufferThread errThread = new StreamToBufferThread(p.getErrorStream(), buffer);
                 outThread.start();
                 errThread.start();
 

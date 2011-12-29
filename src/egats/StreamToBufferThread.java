@@ -8,12 +8,12 @@ import java.io.InputStreamReader;
  *
  * @author Augie Hill - augman85@gmail.com
  */
-public class StreamToFileThread extends Thread {
+public class StreamToBufferThread extends Thread {
 
     private InputStream is;
     private StringBuffer buffer;
 
-    public StreamToFileThread(InputStream is, StringBuffer buffer) {
+    public StreamToBufferThread(InputStream is, StringBuffer buffer) {
         this.is = is;
         this.buffer = buffer;
     }
