@@ -12,7 +12,7 @@ public class WorkFileManager {
     private final Server server;
 
     static {
-        Flags.setDefault(Flags.WORK, "./work/");
+        Flags.setDefault(Flags.WORK, "work");
     }
 
     public WorkFileManager(Server server) {

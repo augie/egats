@@ -15,23 +15,17 @@ import java.util.StringTokenizer;
  */
 public class RequestProcessor implements Runnable {
 
-    private static final Map<String, String> STATIC_RESPONSES = new HashMap<String, String>();
     private final Server server;
     private final Socket socket;
     private BufferedReader br = null;
     private DataOutputStream dos = null;
-
-    static {
-        STATIC_RESPONSES.put("/", IOUtil.safeGetResourceAsString("/egats/html/index.html"));
-        STATIC_RESPONSES.put("/new-process", IOUtil.safeGetResourceAsString("/egats/html/new-process.html"));
-        STATIC_RESPONSES.put("/processes", IOUtil.safeGetResourceAsString("/egats/html/processes.html"));
-    }
 
     public RequestProcessor(Server server, Socket socket) {
         this.server = server;
         this.socket = socket;
     }
 
+    @Override
     public final void run() {
         try {
             // Open I/O streams
@@ -127,11 +121,8 @@ public class RequestProcessor implements Runnable {
     }
 
     private void processGetRequest(String object, String header, StringTokenizer requestTokenizer) throws Exception {
-        // Static HTML pages
-        if (STATIC_RESPONSES.containsKey(object)) {
-            sendResponse(STATIC_RESPONSES.get(object), "text/html");
-        } // Mirrors the request back to the requester. Human-oriented.
-        else if (object.startsWith("/mirror")) {
+        // Mirrors the request back to the requester. Human-oriented.
+        if (object.startsWith("/mirror")) {
             StringBuilder output = new StringBuilder();
             output.append(header);
             output.append("\n");
