@@ -19,29 +19,6 @@ import java.net.Socket;
 public class IOUtil {
 
     /**
-     *
-     * @param resource
-     * @return
-     */
-    public static String safeGetResourceAsString(String resource) {
-        try {
-            return getResourceAsString(resource);
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
-    /**
-     * 
-     * @param resource
-     * @return
-     * @throws IOException
-     */
-    public static String getResourceAsString(String resource) throws IOException {
-        return readInputStream(IOUtil.class.getResourceAsStream(resource));
-    }
-
-    /**
      * 
      * @param file
      * @return

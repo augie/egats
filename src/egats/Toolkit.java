@@ -17,7 +17,7 @@ public class Toolkit {
     private final Set<String> pyScripts = new HashSet<String>();
 
     static {
-        Flags.setDefault(Flags.TOOLKIT, "./toolkit/");
+        Flags.setDefault(Flags.TOOLKIT, "toolkit");
     }
 
     public Toolkit(Server server) throws Exception {
