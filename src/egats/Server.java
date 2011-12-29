@@ -9,7 +9,7 @@ public class Server {
     private final RequestListeningThread listener;
     private final RequestProcessorExecutor executor;
     private final EGATProcessExecutor egatExecutor;
-    private final EGATClassLoader egatClassLoader;
+    private final Toolkit toolkit;
     private final WorkFileManager workFileManager;
     private final Flags flags;
 
@@ -17,12 +17,12 @@ public class Server {
         Flags.setDefault(Flags.HOST, "localhost");
     }
 
-    public Server(Flags flags) {
+    public Server(Flags flags) throws Exception {
         this.flags = flags;
         listener = new RequestListeningThread(this);
         executor = new RequestProcessorExecutor(this);
         egatExecutor = new EGATProcessExecutor(this);
-        egatClassLoader = new EGATClassLoader(this);
+        toolkit = new Toolkit(this);
         workFileManager = new WorkFileManager(this);
     }
 
@@ -65,8 +65,12 @@ public class Server {
         return egatExecutor;
     }
 
-    public final EGATClassLoader getClassLoader() {
-        return egatClassLoader;
+    public final Toolkit getToolkit() {
+        return toolkit;
+    }
+
+    public final WorkFileManager getWorkFileManager() {
+        return workFileManager;
     }
 
     public final void logException(Exception e) {
@@ -92,15 +96,8 @@ public class Server {
             System.exit(0);
         }
 
-        // The library directory must be set.
-        if (!flags.contains(Flags.LIB)) {
-            throw new Exception("Library directory flag is not set.");
-        }
-
-        // Start the server using the given flags
+        // Create the server with the given flags
         Server s = new Server(flags);
-        // Load the library
-        s.getClassLoader().load();
         // Start the server
         s.start();
     }

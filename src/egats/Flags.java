@@ -16,10 +16,10 @@ public class Flags {
     // Define flags
     public static final String HELP = "h";
     public static final String HOST = "H";
-    public static final String LIB = "l";
     public static final String PORT = "p";
     public static final String REQUEST_PROCESSING_THREADS = "rpt";
     public static final String REQUEST_PROCESSING_QUEUE = "rpq";
+    public static final String TOOLKIT = "t";
     public static final String WORK = "w";
     // The flag map maps the flag to the expected number of inputs for that flag
     private static final Map<String, Integer> FLAG_MAP = new HashMap<String, Integer>();
@@ -38,11 +38,6 @@ public class Flags {
         FLAG_MAP.put(HOST, 1);
         FLAG_ALTERNATIVES_MAP.put("host", HOST);
 
-        // Library flag
-        FLAG_MAP.put(LIB, 1);
-        FLAG_ALTERNATIVES_MAP.put("lib", LIB);
-        FLAG_ALTERNATIVES_MAP.put("library", LIB);
-
         // Port flag
         FLAG_MAP.put(PORT, 1);
         FLAG_ALTERNATIVES_MAP.put("port", PORT);
@@ -54,6 +49,10 @@ public class Flags {
         // Request processing threads flag
         FLAG_MAP.put(REQUEST_PROCESSING_QUEUE, 1);
         FLAG_ALTERNATIVES_MAP.put("request-processing-queue", REQUEST_PROCESSING_QUEUE);
+
+        // Toolkit flag
+        FLAG_MAP.put(TOOLKIT, 1);
+        FLAG_ALTERNATIVES_MAP.put("toolkit", TOOLKIT);
 
         // Work flag
         FLAG_MAP.put(WORK, 1);

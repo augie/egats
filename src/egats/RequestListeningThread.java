@@ -11,14 +11,13 @@ import java.util.concurrent.Future;
  */
 public class RequestListeningThread extends Thread {
 
-    public static final int DEFAULT_PORT = 55555;
     private Server server;
     private Integer port;
     private ServerSocket ss;
     private boolean run = true;
 
     static {
-        Flags.setDefault(Flags.PORT, DEFAULT_PORT);
+        Flags.setDefault(Flags.PORT, 55555);
     }
 
     public RequestListeningThread(Server server) {

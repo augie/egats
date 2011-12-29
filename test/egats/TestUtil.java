@@ -12,12 +12,11 @@ import java.net.URLConnection;
  */
 public class TestUtil {
 
-    public static final Server getServer() {
-        Server server = new Server(new Flags(new String[0]));
-        return server;
+    public static final Server getServer() throws Exception {
+        return new Server(new Flags(new String[0]));
     }
 
-    public static final Server startServer() {
+    public static final Server startServer() throws Exception {
         Server server = getServer();
         server.start();
         // Give it a little to get going
