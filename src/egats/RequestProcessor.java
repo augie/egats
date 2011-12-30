@@ -1,11 +1,13 @@
 package egats;
 
+import com.mongodb.util.JSON;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -128,8 +130,8 @@ public class RequestProcessor implements Runnable {
                 output.append("\n");
             }
             sendResponse(output.toString());
-        } // Responds with the statistics of the server. Human-oriented.
-        else if (object.startsWith("/reloadlibs")) {
+        } // Reloads the toolkit
+        else if (object.startsWith("/reloadlibs") || object.startsWith("/reloadtoolkit")) {
             Response response = null;
             try {
                 server.getToolkit().reload();
@@ -167,6 +169,25 @@ public class RequestProcessor implements Runnable {
                 response = new Response(Response.STATUS_CODE_NOT_FOUND,
                         "The EGAT process you requested was not found. The body of this message contains the ID requested.",
                         id);
+            }
+            sendResponse(response);
+        } // Response with a list of processes
+        else if (object.startsWith("/pl/")) {
+            Long createTime = null;
+            Response response = null;
+            try {
+                createTime = Long.valueOf(object.substring(4));
+                List<EGATProcess> processes = EGATProcess.CACHE.get(createTime);
+                response = new Response(Response.STATUS_CODE_OK,
+                        "The body of this message contains a list of EGAT processes.",
+                        JSON.serialize(processes));
+            } catch (Exception e) {
+                // Log
+                // TODO
+                // Tell them we couldn't find it
+                response = new Response(Response.STATUS_CODE_NOT_FOUND,
+                        "There was a problem getting a list of processes. The body of this message contains the requested create time threshold.",
+                        String.valueOf(createTime));
             }
             sendResponse(response);
         } // Response with an object of some type.

@@ -24,10 +24,12 @@ public class EGATProcess extends DataObject implements Runnable {
     private Long createTime;
     private Long startTime;
     private Long finishTime;
+    private String name;
     private String methodPath;
     private String[] args;
     private String outputID;
 
+    @Override
     public final void run() {
         try {
             // Set up
@@ -238,6 +240,15 @@ public class EGATProcess extends DataObject implements Runnable {
         put("methodPath", methodPath);
     }
 
+    public final String getName() {
+        return name;
+    }
+    
+    public final void setName(String name) {
+        this.name = name;
+        put("name", name);
+    }
+    
     public final String getOutputID() {
         return outputID;
     }
@@ -313,7 +324,12 @@ public class EGATProcess extends DataObject implements Runnable {
     }
 
     public static EGATProcess read(String json) throws Exception {
-        EGATProcess o = CACHE.convert((DBObject) JSON.parse(json));
+        return read((DBObject) JSON.parse(json));
+    }
+    
+    public static EGATProcess read(DBObject dbo) throws Exception {
+        EGATProcess o = CACHE.convert(dbo);
+        o.setName(o.getString("name"));
         o.setMethodPath(o.getString("methodPath"));
         o.setArgs(((BasicDBList) o.get("args")).toArray(new String[0]));
         o.setCreateTime(o.getLong("createTime"));

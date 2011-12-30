@@ -2,9 +2,12 @@ package egats;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import org.bson.types.ObjectId;
 
@@ -43,6 +46,30 @@ public class DataObjectCache<T extends DataObject> {
         cache.put(id, new SoftReference<T>(o));
 
         return o;
+    }
+    
+    public final List<T> get(Long createTime) throws Exception {
+        if (createTime == null) {
+            return null;
+        }
+        
+        // Must be greater than the given creation time
+        DBObject query = new BasicDBObject();
+        query.put("createTime", new BasicDBObject("$gt", createTime));
+        DBCursor cursor = dc.find(query);
+        
+        // Process the results
+        List<T> list = new LinkedList<T>();
+        while (cursor.hasNext()) {
+            // Convert the DB object to a Java object
+            T o = convert(cursor.next());
+            // Save the Java object to the cache
+            cache.put(o.getID(), new SoftReference<T>(o));
+            // Add the Java object to the list
+            list.add(o);
+        }
+        
+        return list;
     }
 
     public final void insert(String id, T t) {
