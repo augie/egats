@@ -23,11 +23,8 @@ public class EGATSObjectCache {
             return cache.get(id).get();
         }
 
-        // Get the object from the EGATS server
-        String json = API.getObjectJSON(id);
-
-        // Convert the result to a Java object
-        EGATSObject o = EGATSObject.read(json);
+        // Get the object
+        EGATSObject o = API.getObject(id);
 
         // Save the Java object to the cache
         cache.put(id, new SoftReference<EGATSObject>(o));
