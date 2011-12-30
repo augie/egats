@@ -4,6 +4,8 @@ import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -12,12 +14,19 @@ import java.util.Set;
  */
 public class Toolkit {
 
+    private static final List<String> toolList = new LinkedList<String>();
+    private static final Set<String> toolSet = new HashSet<String>();
     private final Server server;
     private final Set<ClassLoader> javaClassLoaders = new HashSet<ClassLoader>();
     private final Set<String> pyScripts = new HashSet<String>();
 
     static {
         Flags.setDefault(Flags.TOOLKIT, "toolkit");
+        // What tools are available?
+        toolList.add("GameAnalysis/Analysis.py");
+        toolList.add("egats.example.serverside.ExampleServerSide.fakeEGATProcess");
+        toolList.add("example.py");
+        toolSet.addAll(toolList);
     }
 
     public Toolkit(Server server) throws Exception {
@@ -27,6 +36,14 @@ public class Toolkit {
 
     public final String getToolkitDirectoryPath() {
         return server.getFlags().getString(Flags.TOOLKIT);
+    }
+
+    public final List<String> getTools() {
+       return toolList;
+    }
+    
+    public final boolean isTool(String tool) {
+        return toolSet.contains(tool);
     }
 
     public synchronized final void reload() throws Exception {

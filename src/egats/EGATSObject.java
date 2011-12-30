@@ -42,6 +42,9 @@ public class EGATSObject extends DataObject {
     }
 
     public final void save() throws Exception {
+        if (!containsField("createTime")) {
+            setCreateTime(System.currentTimeMillis());
+        }
         Data.save(Data.OBJECTS, this);
     }
 

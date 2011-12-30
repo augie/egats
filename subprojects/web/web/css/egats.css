@@ -7,11 +7,23 @@
 
 body {
     font-size: 11pt;
-    margin: 10px 100px;
+    margin: 10px 100px 300px 100px;
 }
 
 h2 {
     margin: 0 0 5px 0;
+}
+
+ol, ul {
+    margin: 0 0 0 30px;
+}
+
+table {
+    width: 100%;
+}
+
+table td {
+    padding: 5px 0;
 }
 
 #menu {
@@ -36,4 +48,28 @@ form .item .name {
 }
 
 form .item .input {
+}
+
+.processes {
+}
+
+.processes .process {
+    margin: 0 0 10px 0;
+}
+
+.processes .process div {
+    display: inline-block;
+}
+
+.processes .process .status {
+    float: right;
+}
+
+.processes .process .create-time {
+    font-size: 8pt;
+    margin: 0 0 0 10px;
+}
+
+.process td {
+    vertical-align: text-top;
 }
