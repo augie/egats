@@ -4,9 +4,11 @@ import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 import egats.EGATProcess;
 import egats.EGATSObject;
+import egats.IOUtil;
 import egats.Response;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -20,6 +22,7 @@ public class API {
     public static final String OBJECT_SUBFOLDER = "/o/";
     public static final String PROCESS_SUBFOLDER = "/p/";
     public static final String PROCESS_LIST_SUBFOLDER = "/pl/";
+    public static final String TOOLKIT_SUBFOLDER = "/t/";
 
     public static String getObjectURL(String id) {
         StringBuilder sb = new StringBuilder();
@@ -76,10 +79,25 @@ public class API {
     public static List<EGATProcess> getProcesses(Long createTime) throws Exception {
         String json = API.getProcessListJSON(createTime);
         List<DBObject> dbObjectList = (List<DBObject>) JSON.parse(json);
+        Collections.reverse(dbObjectList);
         List<EGATProcess> list = new LinkedList<EGATProcess>();
         for (DBObject o : dbObjectList) {
             list.add(EGATProcess.read(o));
         }
         return list;
+    }
+    
+    public static String getToolkitURL() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(HOST);
+        sb.append(TOOLKIT_SUBFOLDER);
+        return sb.toString();
+    }
+    
+    public static List<String> getToolkit() throws Exception {
+        URL url = new URL(getToolkitURL());
+        Response response = Response.fromJSON(IOUtil.readInputStream(url.openStream()));
+        String json = response.getBody();
+        return (List<String>) JSON.parse(json);
     }
 }

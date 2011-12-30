@@ -215,6 +215,12 @@ public class RequestProcessor implements Runnable {
                         id);
             }
             sendResponse(response);
+        } // Response with the list of scripts in the toolkit.
+        else if (object.equals("/t") || object.equals("/t/")) {
+            Response response = new Response(Response.STATUS_CODE_OK,
+                    "The body of this message contains the requested object.",
+                    JSON.serialize(server.getToolkit().getTools()));
+            sendResponse(response);
         } else {
             sendResponse(new Response(Response.STATUS_CODE_NOT_FOUND, "Object not recognized: " + object));
         }
