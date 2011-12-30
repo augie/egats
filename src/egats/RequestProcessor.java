@@ -103,10 +103,6 @@ public class RequestProcessor implements Runnable {
         sendResponse(Response.STATUS_CODE_OK, Response.STATUS_OK, "text/plain", response);
     }
 
-    private void sendResponse(String response, String type) throws Exception {
-        sendResponse(Response.STATUS_CODE_OK, Response.STATUS_OK, type, response);
-    }
-
     private void sendResponse(int code, String codeName, String contentType, String response) throws Exception {
         if (dos == null) {
             return;

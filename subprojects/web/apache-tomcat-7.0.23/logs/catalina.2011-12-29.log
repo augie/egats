@@ -1,0 +1,106 @@
+Dec 29, 2011 7:41:31 PM org.apache.catalina.core.AprLifecycleListener init
+INFO: The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: C:\Program Files (x86)\Java\jdk1.7.0_01\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\Program Files\Common Files\Microsoft Shared\Windows Live;C:\Program Files (x86)\Common Files\Microsoft Shared\Windows Live;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\ThinkPad\Bluetooth Software\;C:\Program Files\ThinkPad\Bluetooth Software\syswow64;C:\Program Files\Broadcom\WHL\;C:\Program Files\Broadcom\WHL\syswow64;C:\Program Files\Broadcom\WHL\SysWow64\;C:\Program Files\Broadcom\WHL\SysWow64\syswow64;C:\Program Files (x86)\Common Files\Lenovo;C:\Program Files (x86)\Common Files\Ulead Systems\MPEG;C:\Program Files\Common Files\Lenovo;C:\Program Files (x86)\Windows Live\Shared;C:\SWTOOLS\ReadyApps;C:\Program Files (x86)\Intel\Services\IPT\;C:\Program Files\TortoiseSVN\bin;.
+Dec 29, 2011 7:41:32 PM org.apache.coyote.AbstractProtocol init
+INFO: Initializing ProtocolHandler ["http-bio-8080"]
+Dec 29, 2011 7:41:32 PM org.apache.coyote.AbstractProtocol init
+INFO: Initializing ProtocolHandler ["ajp-bio-8009"]
+Dec 29, 2011 7:41:32 PM org.apache.catalina.startup.Catalina load
+INFO: Initialization processed in 1749 ms
+Dec 29, 2011 7:41:32 PM org.apache.catalina.core.StandardService startInternal
+INFO: Starting service Catalina
+Dec 29, 2011 7:41:32 PM org.apache.catalina.core.StandardEngine startInternal
+INFO: Starting Servlet Engine: Apache Tomcat/7.0.23
+Dec 29, 2011 7:41:32 PM org.apache.catalina.startup.HostConfig deployDirectory
+INFO: Deploying web application directory C:\Users\Augie\Dropbox\Projects\egta\egats\subprojects\web\apache-tomcat-7.0.23\webapps\docs
+Dec 29, 2011 7:41:33 PM org.apache.catalina.startup.HostConfig deployDirectory
+INFO: Deploying web application directory C:\Users\Augie\Dropbox\Projects\egta\egats\subprojects\web\apache-tomcat-7.0.23\webapps\examples
+Dec 29, 2011 7:41:34 PM org.apache.catalina.startup.HostConfig deployDirectory
+INFO: Deploying web application directory C:\Users\Augie\Dropbox\Projects\egta\egats\subprojects\web\apache-tomcat-7.0.23\webapps\host-manager
+Dec 29, 2011 7:41:34 PM org.apache.catalina.startup.HostConfig deployDirectory
+INFO: Deploying web application directory C:\Users\Augie\Dropbox\Projects\egta\egats\subprojects\web\apache-tomcat-7.0.23\webapps\manager
+Dec 29, 2011 7:41:34 PM org.apache.catalina.startup.HostConfig deployDirectory
+INFO: Deploying web application directory C:\Users\Augie\Dropbox\Projects\egta\egats\subprojects\web\apache-tomcat-7.0.23\webapps\ROOT
+Dec 29, 2011 7:41:34 PM org.apache.coyote.AbstractProtocol start
+INFO: Starting ProtocolHandler ["http-bio-8080"]
+Dec 29, 2011 7:41:34 PM org.apache.coyote.AbstractProtocol start
+INFO: Starting ProtocolHandler ["ajp-bio-8009"]
+Dec 29, 2011 7:41:34 PM org.apache.catalina.startup.Catalina start
+INFO: Server startup in 2170 ms
+Dec 29, 2011 7:41:36 PM org.apache.catalina.startup.HostConfig deployDescriptor
+INFO: Deploying configuration descriptor C:\Users\Augie\Dropbox\Projects\egta\egats\subprojects\web\apache-tomcat-7.0.23\conf\Catalina\localhost\egats-web.xml
+Dec 29, 2011 7:41:37 PM org.apache.catalina.util.LifecycleBase start
+INFO: The start() method was called on component [StandardEngine[Catalina].StandardHost[localhost].StandardContext[/egats-web]] after start() had already been called. The second call will be ignored.
+Dec 29, 2011 7:43:01 PM org.apache.catalina.core.StandardContext reload
+INFO: Reloading Context with name [/egats-web] has started
+Dec 29, 2011 7:43:01 PM org.apache.catalina.loader.WebappClassLoader clearReferencesThreads
+SEVERE: The web application [/egats-web] appears to have started a thread named [MongoCleaner29431143] but has failed to stop it. This is very likely to create a memory leak.
+Dec 29, 2011 7:43:01 PM org.apache.catalina.core.StandardContext reload
+INFO: Reloading Context with name [/egats-web] is completed
+Dec 29, 2011 7:43:16 PM org.apache.catalina.core.StandardContext reload
+INFO: Reloading Context with name [/egats-web] has started
+Dec 29, 2011 7:43:17 PM org.apache.catalina.core.StandardContext reload
+INFO: Reloading Context with name [/egats-web] is completed
+Dec 29, 2011 7:43:25 PM org.apache.catalina.core.StandardContext reload
+INFO: Reloading Context with name [/egats-web] has started
+Dec 29, 2011 7:43:26 PM org.apache.catalina.core.StandardContext reload
+INFO: Reloading Context with name [/egats-web] is completed
+Dec 29, 2011 7:43:27 PM org.apache.catalina.core.StandardContext reload
+INFO: Reloading Context with name [/egats-web] has started
+Dec 29, 2011 7:43:28 PM org.apache.catalina.core.StandardContext reload
+INFO: Reloading Context with name [/egats-web] is completed
+Dec 29, 2011 7:43:34 PM org.apache.catalina.core.StandardContext reload
+INFO: Reloading Context with name [/egats-web] has started
+Dec 29, 2011 7:43:35 PM org.apache.catalina.core.StandardContext reload
+INFO: Reloading Context with name [/egats-web] is completed
+Dec 29, 2011 7:45:50 PM org.apache.catalina.core.StandardServer await
+INFO: A valid shutdown command was received via the shutdown port. Stopping the Server instance.
+Dec 29, 2011 7:45:50 PM org.apache.coyote.AbstractProtocol pause
+INFO: Pausing ProtocolHandler ["http-bio-8080"]
+Dec 29, 2011 7:45:50 PM org.apache.coyote.AbstractProtocol pause
+INFO: Pausing ProtocolHandler ["ajp-bio-8009"]
+Dec 29, 2011 7:45:50 PM org.apache.catalina.core.StandardService stopInternal
+INFO: Stopping service Catalina
+Dec 29, 2011 7:45:50 PM org.apache.catalina.loader.WebappClassLoader clearReferencesThreads
+SEVERE: The web application [/egats-web] appears to have started a thread named [MongoCleaner20689161] but has failed to stop it. This is very likely to create a memory leak.
+Dec 29, 2011 7:45:51 PM org.apache.coyote.AbstractProtocol stop
+INFO: Stopping ProtocolHandler ["http-bio-8080"]
+Dec 29, 2011 7:45:51 PM org.apache.coyote.AbstractProtocol stop
+INFO: Stopping ProtocolHandler ["ajp-bio-8009"]
+Dec 29, 2011 7:45:51 PM org.apache.coyote.AbstractProtocol destroy
+INFO: Destroying ProtocolHandler ["http-bio-8080"]
+Dec 29, 2011 7:45:51 PM org.apache.coyote.AbstractProtocol destroy
+INFO: Destroying ProtocolHandler ["ajp-bio-8009"]
+Dec 29, 2011 7:46:46 PM org.apache.catalina.core.AprLifecycleListener init
+INFO: The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: C:\Program Files (x86)\Java\jdk1.7.0_01\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\Program Files\Common Files\Microsoft Shared\Windows Live;C:\Program Files (x86)\Common Files\Microsoft Shared\Windows Live;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\ThinkPad\Bluetooth Software\;C:\Program Files\ThinkPad\Bluetooth Software\syswow64;C:\Program Files\Broadcom\WHL\;C:\Program Files\Broadcom\WHL\syswow64;C:\Program Files\Broadcom\WHL\SysWow64\;C:\Program Files\Broadcom\WHL\SysWow64\syswow64;C:\Program Files (x86)\Common Files\Lenovo;C:\Program Files (x86)\Common Files\Ulead Systems\MPEG;C:\Program Files\Common Files\Lenovo;C:\Program Files (x86)\Windows Live\Shared;C:\SWTOOLS\ReadyApps;C:\Program Files (x86)\Intel\Services\IPT\;C:\Program Files\TortoiseSVN\bin;.
+Dec 29, 2011 7:46:47 PM org.apache.coyote.AbstractProtocol init
+INFO: Initializing ProtocolHandler ["http-bio-8080"]
+Dec 29, 2011 7:46:47 PM org.apache.coyote.AbstractProtocol init
+INFO: Initializing ProtocolHandler ["ajp-bio-8009"]
+Dec 29, 2011 7:46:47 PM org.apache.catalina.startup.Catalina load
+INFO: Initialization processed in 1298 ms
+Dec 29, 2011 7:46:47 PM org.apache.catalina.core.StandardService startInternal
+INFO: Starting service Catalina
+Dec 29, 2011 7:46:47 PM org.apache.catalina.core.StandardEngine startInternal
+INFO: Starting Servlet Engine: Apache Tomcat/7.0.23
+Dec 29, 2011 7:46:47 PM org.apache.catalina.startup.HostConfig deployDescriptor
+INFO: Deploying configuration descriptor C:\Users\Augie\Dropbox\Projects\egta\egats\subprojects\web\apache-tomcat-7.0.23\conf\Catalina\localhost\egats-web.xml
+Dec 29, 2011 7:46:48 PM org.apache.catalina.startup.HostConfig deployDirectory
+INFO: Deploying web application directory C:\Users\Augie\Dropbox\Projects\egta\egats\subprojects\web\apache-tomcat-7.0.23\webapps\docs
+Dec 29, 2011 7:46:48 PM org.apache.catalina.startup.HostConfig deployDirectory
+INFO: Deploying web application directory C:\Users\Augie\Dropbox\Projects\egta\egats\subprojects\web\apache-tomcat-7.0.23\webapps\examples
+Dec 29, 2011 7:46:48 PM org.apache.catalina.startup.HostConfig deployDirectory
+INFO: Deploying web application directory C:\Users\Augie\Dropbox\Projects\egta\egats\subprojects\web\apache-tomcat-7.0.23\webapps\host-manager
+Dec 29, 2011 7:46:49 PM org.apache.catalina.startup.HostConfig deployDirectory
+INFO: Deploying web application directory C:\Users\Augie\Dropbox\Projects\egta\egats\subprojects\web\apache-tomcat-7.0.23\webapps\manager
+Dec 29, 2011 7:46:49 PM org.apache.catalina.startup.HostConfig deployDirectory
+INFO: Deploying web application directory C:\Users\Augie\Dropbox\Projects\egta\egats\subprojects\web\apache-tomcat-7.0.23\webapps\ROOT
+Dec 29, 2011 7:46:49 PM org.apache.coyote.AbstractProtocol start
+INFO: Starting ProtocolHandler ["http-bio-8080"]
+Dec 29, 2011 7:46:49 PM org.apache.coyote.AbstractProtocol start
+INFO: Starting ProtocolHandler ["ajp-bio-8009"]
+Dec 29, 2011 7:46:49 PM org.apache.catalina.startup.Catalina start
+INFO: Server startup in 1958 ms
+Dec 29, 2011 7:46:50 PM org.apache.catalina.core.StandardContext reload
+INFO: Reloading Context with name [/egats-web] has started
+Dec 29, 2011 7:46:51 PM org.apache.catalina.core.StandardContext reload
+INFO: Reloading Context with name [/egats-web] is completed
