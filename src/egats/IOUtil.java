@@ -17,6 +17,16 @@ import java.net.Socket;
  * @author Augie Hill - augman85@gmail.com
  */
 public class IOUtil {
+    
+    /**
+     * 
+     * @param resource
+     * @return
+     * @throws IOException 
+     */
+    public static String readResource(String resource) throws IOException {
+        return readInputStream(IOUtil.class.getResourceAsStream(resource));
+    }
 
     /**
      * 

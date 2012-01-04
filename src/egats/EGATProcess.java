@@ -311,6 +311,7 @@ public class EGATProcess extends DataObject implements Runnable {
         // Read the DBObject (attributes must be set separately)
         EGATProcess o = CACHE.convert((DBObject) JSON.parse(json));
         // Set the attributes the user can set
+        o.setName(o.getString("name"));
         o.setMethodPath(o.getString("methodPath"));
         o.setArgs(((BasicDBList) o.get("args")).toArray(new String[0]));
         // Set everything the client can't set

@@ -19,4 +19,16 @@ public class WebUtil {
         }
         return new Date(timestamp).toString();
     }
+    
+    /**
+     * 
+     * @param string
+     * @return 
+     */
+    public static String getString(String string) {
+        if (string == null) {
+            return "null";
+        }
+        return string;
+    }
 }

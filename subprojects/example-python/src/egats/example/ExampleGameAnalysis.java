@@ -20,7 +20,7 @@ public class ExampleGameAnalysis {
         long startTime = System.currentTimeMillis();
 
         // Turn the input into an object
-        String input = IOUtil.getResourceAsString("/egats/example/example.in");
+        String input = IOUtil.readResource("/egats/example/example.in");
         EGATSObjectFile egatsObjectFile = new EGATSObjectFile("example.json", input);
         EGATSObject arg1Obj = new EGATSObject();
         arg1Obj.setClassPath(EGATSObjectFile.class.getName());

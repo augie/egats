@@ -10,6 +10,10 @@ body {
     margin: 10px 100px 300px 100px;
 }
 
+button {
+    padding: 0 10px;
+}
+
 h2 {
     margin: 0 0 5px 0;
 }
@@ -24,6 +28,7 @@ table {
 
 table td {
     padding: 5px 0;
+    vertical-align: text-top;
 }
 
 #menu {
@@ -68,8 +73,4 @@ form .item .input {
 .processes .process .create-time {
     font-size: 8pt;
     margin: 0 0 0 10px;
-}
-
-.process td {
-    vertical-align: text-top;
 }

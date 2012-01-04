@@ -11,34 +11,36 @@ if (request.getParameter("id") != null) {
         </tr>
         <tr>
             <td>Name</td>
-            <td><%=o.getName()%></td>
+            <td><%=WebUtil.getString(o.getName())%></td>
         </tr>
         <tr>
             <td>Script</td>
-            <td><%=o.getMethodPath()%></td>
+            <td><%=WebUtil.getString(o.getMethodPath())%></td>
         </tr>
         <tr>
             <td>Args</td>
             <td>
                 <ol>
                     <%
-                    boolean python = o.getMethodPath().toLowerCase().endsWith(".py");
-                    for (String arg : o.getArgs()) {
-                        boolean link = !python;
-                        String id = arg;
-                        if (python && id.startsWith("egats-obj-file:")) {
-                            id = id.replaceFirst("egats-obj-file:", "");
-                            link = true;
+                    if (o.getMethodPath() != null) {
+                        boolean python = o.getMethodPath().toLowerCase().endsWith(".py");
+                        for (String arg : o.getArgs()) {
+                            boolean link = !python;
+                            String id = arg;
+                            if (python && id.startsWith("egats-obj-file:")) {
+                                id = id.replaceFirst("egats-obj-file:", "");
+                                link = true;
+                            }
+                            out.println("<li>");
+                            if (link) {
+                                out.println("<a href=\"object.jsp?id=" + id + "\">");
+                            }
+                            out.println(arg);
+                            if (link) {
+                                out.println("</a>");
+                            }
+                            out.println("</li>");
                         }
-                        out.println("<li>");
-                        if (link) {
-                            out.println("<a href=\"object.jsp?id=" + id + "\">");
-                        }
-                        out.println(arg);
-                        if (link) {
-                            out.println("</a>");
-                        }
-                        out.println("</li>");
                     }
                     %>
                 </ol>
@@ -46,7 +48,7 @@ if (request.getParameter("id") != null) {
         </tr>
         <tr>
             <td>Status</td>
-            <td><%=o.getStatus()%></td>
+            <td><%=WebUtil.getString(o.getStatus())%></td>
         </tr>
         <tr>
             <td>Output</td>
@@ -72,7 +74,7 @@ if (request.getParameter("id") != null) {
         </tr>
         <tr>
             <td>Exception</td>
-            <td><%=o.getExceptionMessage()%></td>
+            <td><%=WebUtil.getString(o.getExceptionMessage())%></td>
         </tr>
         <tr>
             <td>Raw JSON</td>
