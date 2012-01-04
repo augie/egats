@@ -23,6 +23,7 @@ public class API {
     public static final String PROCESS_SUBFOLDER = "/p/";
     public static final String PROCESS_LIST_SUBFOLDER = "/pl/";
     public static final String TOOLKIT_SUBFOLDER = "/t/";
+    public static final String CREATE_PROCESS_URL = HOST + PROCESS_SUBFOLDER;
 
     public static String getObjectURL(String id) {
         StringBuilder sb = new StringBuilder();
@@ -62,6 +63,24 @@ public class API {
         return EGATProcess.read(json);
     }
 
+    public static String createProcess(String name, String process, String[] args) throws Exception {
+        // Create the process
+        EGATProcess egatProcess = new EGATProcess();
+        egatProcess.setName(name);
+        egatProcess.setMethodPath(process);
+        egatProcess.setArgs(args);
+
+        // Send the process request to the server
+        Response response = Response.fromJSON(Util.sendPostRequest(CREATE_PROCESS_URL, egatProcess.getJSON()));
+        if (response.getStatusCode() != Response.STATUS_CODE_OK) {
+            throw new Exception("Problem sending process request to server: " + response);
+        }
+
+        // Return the process ID
+        String processID = response.getBody();
+        return processID;
+    }
+
     public static String getProcessListURL(Long createTime) {
         StringBuilder sb = new StringBuilder();
         sb.append(HOST);
@@ -86,14 +105,14 @@ public class API {
         }
         return list;
     }
-    
+
     public static String getToolkitURL() {
         StringBuilder sb = new StringBuilder();
         sb.append(HOST);
         sb.append(TOOLKIT_SUBFOLDER);
         return sb.toString();
     }
-    
+
     public static List<String> getToolkit() throws Exception {
         URL url = new URL(getToolkitURL());
         Response response = Response.fromJSON(IOUtil.readInputStream(url.openStream()));
