@@ -56,7 +56,7 @@ if (request.getParameter("id") != null) {
                 <% if (o.getOutputID() == null) { %>
                 null
                 <% } else { %>
-                <a href="object.jsp?id=<%=o.getOutputID()%>"><%=o.getOutputID()%></a>
+                <a href="object.jsp?id=<%=o.getOutputID()%>"><%=o.getOutputID()%></a> (<a href="object-dl.jsp?id=<%=o.getOutputID()%>">Download</a>)
                 <% } %>
             </td>
         </tr>

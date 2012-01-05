@@ -7,19 +7,26 @@ if (request.getParameter("id") != null) {
     <table class="process">
         <tr>
             <td width="15%">ID</td>
-            <td><%=o.getID()%></td>
+            <td><%=WebUtil.getString(o.getID())%></td>
         </tr>
         <tr>
             <td>Class</td>
-            <td><%=o.getClassPath()%></td>
+            <td><%=WebUtil.getString(o.getClassPath())%></td>
         </tr>
         <tr>
             <td>Created</td>
             <td><%=WebUtil.getDate(o.getCreateTime())%></td>
         </tr>
         <tr>
-            <td>Object</td>
-            <td><%=o.getObject()%></td>
+            <td>
+                Object<br/>
+                <a href="object-dl.jsp?id=<%=o.getID()%>">Download</a>
+            </td>
+            <td>
+                <% if (o.getObject() != null) { %>
+                    <%=o.getObject().replaceAll("\n", "<br/>")%>
+                <% } %>
+            </td>
         </tr>
         <tr>
             <td>Raw JSON</td>

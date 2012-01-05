@@ -1,35 +1,91 @@
+<%@page import="org.apache.commons.fileupload.*, org.apache.commons.fileupload.servlet.*, org.apache.commons.fileupload.disk.*, org.apache.commons.fileupload.util.*" %>
 <%@include file="inc/header.jsp" %>
-<h2>Create a Process</h2>
+<h2>New Process</h2>
 <%
 String error = null;
 if (request.getMethod().equals("POST")) {
     try {
+        // Handle multi-part form data request
+        FileItemFactory factory = new DiskFileItemFactory();
+        ServletFileUpload upload = new ServletFileUpload(factory);
+        List<FileItem> items = upload.parseRequest(request);
+        
+        // Place form fields into a map
+        Map<String, String> formFields = new HashMap<String, String>();
+        // Work with the file items later
+        Set<FileItem> fileItems = new HashSet<FileItem>();
+        
+        // Process the uploaded form field items
+        Iterator<FileItem> iter = items.iterator();
+        while (iter.hasNext()) {
+            FileItem item = iter.next();
+            if (item.isFormField()) {
+                formFields.put(item.getFieldName(), item.getString());
+            } else {
+                fileItems.add(item);
+            }
+        }
+        
         // Get the inputs
-        Part namePart = request.getPart("name");
-        if (namePart == null) {
-            throw new Exception("Name cannot be blank.");
+        String name = formFields.get("name");
+        
+        String process = formFields.get("process");
+        if (process == null) {
+            throw new Exception("Process is null.");
         }
-        String name = namePart.toString();
-        if (name == null || name.equals("")) {
-            throw new Exception("Name cannot be blank.");
+        process = process.trim();
+        if (process.equals("")) {
+            throw new Exception("Process is blank.");
+        }
+        boolean isPyProcess = process.endsWith(".py");
+        
+        String argCountString = formFields.get("argCount");
+        if (argCountString == null) {
+            throw new Exception("Arg count is null.");
+        }
+        int argCount = Integer.valueOf(argCountString.trim());
+        
+        // Read the args
+        ArrayList<String> args = new ArrayList<String>();
+        for (int argID = 0; argID < argCount; argID++) {
+            if (isPyProcess) {
+                if (formFields.containsKey("arg" + argID)) {
+                    args.add(formFields.get("arg" + argID));
+                } else {
+                    for (FileItem fileItem : fileItems) {
+                        if (fileItem.getFieldName().equals("arg" + argID)) {
+                            // Upload the object
+                            String argObjID = API.createObjectFile(fileItem.getName(), IOUtil.readInputStream(fileItem.getInputStream()));
+                            // Set the arg
+                            args.add("egats-obj-file:" + argObjID);
+                            break;
+                        }
+                    }
+                }
+            } else {
+                String classPath = formFields.get("arg" + argID + "ClassPath");
+                String object = null;
+                if (formFields.containsKey("arg" + argID)) {
+                    object = formFields.get("arg" + argID);
+                } else {
+                    for (FileItem fileItem : fileItems) {
+                        if (fileItem.getFieldName().equals("arg" + argID)) {
+                            object = IOUtil.readInputStream(fileItem.getInputStream());
+                            break;
+                        }
+                    }
+                }
+                
+                // Create the object
+                String id = API.createObject(classPath, object);
+                
+                // Set the argument
+                args.add(id);
+            }
         }
         
-        Part processPart = request.getPart("process");
-        if (processPart == null) {
-            throw new Exception("Process cannot be blank.");
-        }
-        String process = processPart.toString();
-        if (process == null || process.equals("")) {
-            throw new Exception("Process cannot be blank.");
-        }
-        
-        String[] args = new String[0];
-        if (args == null) {
-            throw new Exception("Args is null.");
-        }
-
         // Create an EGAT process to run
-        String id = API.createProcess(name, process, args);
+        String id = API.createProcess(name, process, args.toArray(new String[0]));
 
         // Redirect the user to the process page
         %>
@@ -47,6 +103,53 @@ if (request.getMethod().equals("GET") || error != null) {
         %><p>The following error occurred:<br/><%=error%></p><%
     }
     %>
+    <script type="text/javascript">
+        var argID = 0;
+        
+        function changedProcess() {
+            if ($("#process").val() == '') {
+                $("#addArg").attr('disabled', 'disabled');
+                $("#addFile").attr('disabled', 'disabled');
+                $("#args").html("<i>Select a process.</i>");
+            } else {
+                $("#addArg").removeAttr('disabled');
+                $("#addFile").removeAttr('disabled');
+                $("#args").html('');
+            }
+        }
+
+        function getNextArgID() {
+            var id = argID++;
+            $("#argCount").val(argID);
+            return id;
+        }
+
+        function addArgInput() {
+            var id = getNextArgID();
+            var process = $("#process").val();
+            if (process.length >= 3 && process.substring(process.length - 3) == '.py') {
+                $("#args").append("<div id=\"arg" + id + "\"><textarea name=\"arg" + id + "\"></textarea></div><br/>");
+            } else {
+                $("#args").append("<div id=\"arg" + id + "\">Class path: <input name=\"arg" + id + "ClassPath\" type=\"text\"/><br/>Object: <textarea name=\"arg" + id + "\"></textarea></div><br/>");
+            }
+        }
+
+        function addFileArgInput() {
+            var id = getNextArgID();
+            var process = $("#process").val();
+            if (process.length >= 3 && process.substring(process.length - 3) == '.py') {
+                $("#args").append("<div id=\"arg" + id + "\"><input name=\"arg" + id + "\" type=\"file\"></div><br/>");
+            } else {
+                $("#args").append("<div id=\"arg" + id + "\">Class path: <input name=\"arg" + id + "ClassPath\" type=\"text\"/><br/>Object: <input name=\"arg" + id + "\" type=\"file\"></div><br/>");
+            }
+        }
+
+        function resetArgs() {
+            argID = 0;
+            $("#argCount").val(argID);
+            $("#args").html('');
+        }
+    </script>
     <form action="create-process.jsp" enctype="multipart/form-data" method="post">
         <table>
             <tr>
@@ -56,7 +159,7 @@ if (request.getMethod().equals("GET") || error != null) {
             <tr>
                 <td>Process</td>
                 <td>
-                    <select name="process">
+                    <select id="process" name="process" onchange="changedProcess()">
                         <option value=""></option>
                         <% for (String p : API.getToolkit()) { %>
                         <option value="<%=p%>"><%=p%></option>
@@ -67,27 +170,15 @@ if (request.getMethod().equals("GET") || error != null) {
             <tr>
                 <td>
                     Args<br/>
-                    <button onclick="addArgInput()" type="button">+Arg</button><br/>
-                    <button onclick="addFileArgInput()" type="button">+File</button>
+                    <button id="addArg" onclick="addArgInput()" type="button" disabled>+ Arg</button><br/>
+                    <button id="addFile" onclick="addFileArgInput()" type="button" disabled>+ File</button><br/>
+                    <button onclick="resetArgs()" type="button">Reset</button>
                 </td>
                 <td>
-                    <script type="text/javascript">
-                        var argID = 0;
-                        function getNextArgID() {
-                            return argID++;
-                        }
-
-                        function addArgInput() {
-                            var id = getNextArgID();
-                            $("#args").append("<div id=\"arg" + id + "\"><input name=\"arg" + id + "\" type=\"text\"></div>");
-                        }
-
-                        function addFileArgInput() {
-                            var id = getNextArgID();
-                            $("#args").append("<div id=\"arg" + id + "\"><input name=\"arg" + id + "\" type=\"file\"></div>");
-                        }
-                    </script>
-                    <div id="args"></div>
+                    <input id="argCount" name="argCount" type="hidden" value="0" />
+                    <div id="args">
+                        <i>Select a process.</i>
+                    </div>
                 </td>
             </tr>
             <tr><td colspan="2"><button type="submit">Submit</button></td></tr>

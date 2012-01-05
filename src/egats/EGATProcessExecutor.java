@@ -11,16 +11,19 @@ import java.util.concurrent.TimeUnit;
  */
 public class EGATProcessExecutor extends ThreadPoolExecutor {
 
-    public static final int THREAD_COUNT = 2;
-    public static final int QUEUE_SIZE = 100;
     private final Server server;
 
-    public EGATProcessExecutor(Server server) {
-        this(server, THREAD_COUNT, QUEUE_SIZE);
+    static {
+        Flags.setDefault(Flags.EGAT_PROCESSING_THREADS, 2);
+        Flags.setDefault(Flags.EGAT_PROCESSING_QUEUE, 100);
     }
 
-    public EGATProcessExecutor(Server server, int threadCount, int queueSize) {
-        super(threadCount, threadCount, 100, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(queueSize));
+    public EGATProcessExecutor(Server server) {
+        super(server.getFlags().getInt(Flags.EGAT_PROCESSING_THREADS),
+                server.getFlags().getInt(Flags.EGAT_PROCESSING_THREADS),
+                100,
+                TimeUnit.SECONDS,
+                new LinkedBlockingQueue<Runnable>(server.getFlags().getInt(Flags.EGAT_PROCESSING_QUEUE)));
         this.server = server;
     }
 

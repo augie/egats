@@ -4,6 +4,7 @@ import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 import egats.EGATProcess;
 import egats.EGATSObject;
+import egats.EGATSObjectFile;
 import egats.IOUtil;
 import egats.Response;
 import java.io.IOException;
@@ -18,11 +19,12 @@ import java.util.List;
  */
 public class API {
 
-    public static final String HOST = "http://egat.eecs.umich.edu:80";
+    public static final String HOST = "http://egat.eecs.umich.edu:55555";
     public static final String OBJECT_SUBFOLDER = "/o/";
     public static final String PROCESS_SUBFOLDER = "/p/";
     public static final String PROCESS_LIST_SUBFOLDER = "/pl/";
     public static final String TOOLKIT_SUBFOLDER = "/t/";
+    public static final String CREATE_OBJECT_URL = HOST + OBJECT_SUBFOLDER;
     public static final String CREATE_PROCESS_URL = HOST + PROCESS_SUBFOLDER;
 
     public static String getObjectURL(String id) {
@@ -42,6 +44,28 @@ public class API {
     public static EGATSObject getObject(String id) throws Exception {
         String json = API.getObjectJSON(id);
         return EGATSObject.read(json);
+    }
+    
+    public static String createObject(String classPath, String object) throws Exception {
+        // Create the object
+        EGATSObject egatsObject = new EGATSObject();
+        egatsObject.setClassPath(classPath);
+        egatsObject.setObject(object);
+        
+        // Send the process request to the server
+        Response response = Response.fromJSON(Util.sendPostRequest(CREATE_OBJECT_URL, egatsObject.getJSON()));
+        if (response.getStatusCode() != Response.STATUS_CODE_OK) {
+            throw new Exception("Problem sending object to server: " + response);
+        }
+
+        // Return the ID
+        String objectID = response.getBody();
+        return objectID;
+    }
+
+    public static String createObjectFile(String name, String object) throws Exception {
+        EGATSObjectFile egatsObjectFile = new EGATSObjectFile(name, object);
+        return createObject(EGATSObjectFile.class.getName(), Util.GSON.toJson(egatsObjectFile));
     }
 
     public static String getProcessURL(String id) {

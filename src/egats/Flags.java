@@ -14,6 +14,8 @@ public class Flags {
     // Are we only testing?
     public static boolean TESTING = false;
     // Define flags
+    public static final String EGAT_PROCESSING_THREADS = "ept";
+    public static final String EGAT_PROCESSING_QUEUE = "epq";
     public static final String HELP = "h";
     public static final String HOST = "H";
     public static final String PORT = "p";
@@ -30,6 +32,14 @@ public class Flags {
     private final Map<String, List<String>> flags = new HashMap<String, List<String>>();
 
     static {
+        // Request processing threads flag
+        FLAG_MAP.put(EGAT_PROCESSING_THREADS, 1);
+        FLAG_ALTERNATIVES_MAP.put("egat-processing-threads", EGAT_PROCESSING_THREADS);
+
+        // Request processing threads flag
+        FLAG_MAP.put(EGAT_PROCESSING_QUEUE, 1);
+        FLAG_ALTERNATIVES_MAP.put("egat-processing-queue", EGAT_PROCESSING_QUEUE);
+        
         // Help flag
         FLAG_MAP.put(HELP, 0);
         FLAG_ALTERNATIVES_MAP.put("help", HELP);
