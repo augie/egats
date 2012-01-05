@@ -11,13 +11,11 @@ import java.util.concurrent.TimeUnit;
  */
 public class RequestProcessorExecutor extends ThreadPoolExecutor {
 
-    public static final int DEFAULT_THREAD_COUNT = 2;
-    public static final int DEFAULT_QUEUE_SIZE = 100;
-    private Server server;
+    private final Server server;
 
     static {
-        Flags.setDefault(Flags.REQUEST_PROCESSING_THREADS, DEFAULT_THREAD_COUNT);
-        Flags.setDefault(Flags.REQUEST_PROCESSING_QUEUE, DEFAULT_QUEUE_SIZE);
+        Flags.setDefault(Flags.REQUEST_PROCESSING_THREADS, 2);
+        Flags.setDefault(Flags.REQUEST_PROCESSING_QUEUE, 100);
     }
 
     public RequestProcessorExecutor(Server server) {
