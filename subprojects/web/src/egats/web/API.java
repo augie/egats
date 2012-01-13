@@ -105,6 +105,10 @@ public class API {
         return processID;
     }
 
+    public static String getProcessListURL() {
+        return getProcessListURL((long)0);
+    }
+    
     public static String getProcessListURL(Long createTime) {
         StringBuilder sb = new StringBuilder();
         sb.append(HOST);

@@ -11,4 +11,5 @@
         <div id="menu">
             <div class="item"><a href="processes.jsp">Processes</a></div>
             <div class="item"><a href="create-process.jsp">New Process</a></div>
+            <div class="item"><a href="docs.jsp">Docs</a></div>
         </div>
