@@ -185,7 +185,7 @@ public class RequestProcessor implements Runnable {
                 // Log
                 // TODO
                 // Tell them we couldn't find it
-                response = new Response(Response.STATUS_CODE_NOT_FOUND,
+                response = new Response(Response.STATUS_CODE_ERROR,
                         "There was a problem getting a list of processes. The body of this message contains the requested create time threshold.",
                         String.valueOf(createTime));
             }
