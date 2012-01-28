@@ -98,11 +98,12 @@ public class RequestProcessor implements Runnable {
     }
 
     private void sendResponse(Response response) throws Exception {
-        sendResponse(response.getStatusCode(), response.getStatus(), "text/json", response.toString());
+        // Always send as 200. The JSON Response representation contains the status code information.
+        sendResponse(200, Response.STATUS_OK, "text/json", response.toString());
     }
 
     private void sendResponse(String response) throws Exception {
-        sendResponse(Response.STATUS_CODE_OK, Response.STATUS_OK, "text/plain", response);
+        sendResponse(200, Response.STATUS_OK, "text/plain", response);
     }
 
     private void sendResponse(int code, String codeName, String contentType, String response) throws Exception {

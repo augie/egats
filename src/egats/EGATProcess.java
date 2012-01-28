@@ -41,11 +41,6 @@ public class EGATProcess extends DataObject implements Runnable {
             if (methodPath == null) {
                 throw new Exception("Method path is not set.");
             }
-            
-            // Acceptable method path?
-            if (!server.getToolkit().isTool(methodPath)) {
-                throw new Exception("Invalid tool: \"" + methodPath + "\"");
-            }
 
             // Is this a python script or a java method?
             if (server.getToolkit().containsPyScript(methodPath)) {
@@ -98,7 +93,7 @@ public class EGATProcess extends DataObject implements Runnable {
                         p.exitValue();
                         exited = true;
                     } catch (IllegalThreadStateException e) {
-                        Thread.sleep(250);
+                        Thread.sleep(1000);
                     }
                 }
 
