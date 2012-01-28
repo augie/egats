@@ -26,7 +26,7 @@ table {
     width: 100%;
 }
 
-table td {
+td {
     padding: 5px 0;
     vertical-align: text-top;
 }

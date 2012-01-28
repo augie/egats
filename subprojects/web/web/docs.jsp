@@ -179,8 +179,8 @@
             return;
         }
         
-        var request = $("#request option:selected").val();
-        if (request == '') {
+        var subfolder = $("#subfolder option:selected").val();
+        if (subfolder == '') {
             return;
         }
         
@@ -189,12 +189,10 @@
             return;
         }
         
-        $("#constructed-request").html(method + " " + request + param);
-        if (method == 'GET') {
-            $.get(request + param, function(data) {
-                $("#response").html(data);
-            });
-        }
+        $("#constructed-request").html(method + " <%= API.HOST %>" + subfolder + param);
+        $.get('scripts/api.jsp?method=' + method + '&subfolder=' + subfolder + '&param=' + param, function(data) {
+            $("#response").html(data);
+        });
     }
 </script>
 <form action="" method="get" onsubmit="makeRequest(); return false;">
@@ -211,11 +209,11 @@
         <tr>
             <td>Request</td>
             <td>
-                <select id="request" name="request">
+                <select id="subfolder" name="subfolder">
                     <option value=""></option>
-                    <option value="<%=API.getObjectURL("")%>">Object</option>
-                    <option value="<%=API.getProcessURL("")%>">Process</option>
-                    <option value="<%= API.HOST %><%= API.PROCESS_LIST_SUBFOLDER %>">Process List</option>
+                    <option value="<%= API.OBJECT_SUBFOLDER %>">Object</option>
+                    <option value="<%= API.PROCESS_SUBFOLDER %>">Process</option>
+                    <option value="<%= API.PROCESS_LIST_SUBFOLDER %>">Process List</option>
                 </select>
             </td>
         </tr>
@@ -234,7 +232,7 @@
         </tr>
         <tr>
             <td>Response</td>
-            <td><div id="response" style="font-family: monospace;"></div></td>
+            <td><textarea id="response" style="font-family: monospace; width: 100%;"></textarea></td>
         </tr>
     </table>
 </form>
