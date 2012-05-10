@@ -2,14 +2,14 @@
 
 try {
     String method = request.getParameter("method");
-    String subfolder = request.getParameter("subfolder");
+    String folder = request.getParameter("folder");
     String param = request.getParameter("param");
     String body = request.getParameter("body");
 
     if (method.equals("GET")) {
-        out.print(Util.sendRequest(API.HOST + subfolder + param));
+        out.print(Util.send(API.HOST + folder + param));
     } else if (method.equals("POST")) {
-        out.print(Util.sendPostRequest(API.HOST + subfolder, body));
+        out.print(Util.send(API.HOST + folder, body));
     }
 } catch (Exception e) {
     out.print(e.getMessage());

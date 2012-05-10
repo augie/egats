@@ -7,11 +7,10 @@ import java.util.Map;
 
 /**
  *
- * @author Augie Hill - augman85@gmail.com
+ * @author Augie Hill - augie@umich.edu
  */
 public class Flags {
 
-    // Are we only testing?
     public static boolean TESTING = false;
     // Define flags
     public static final String EGAT_PROCESSING_THREADS = "ept";
@@ -22,7 +21,10 @@ public class Flags {
     public static final String REQUEST_PROCESSING_THREADS = "rpt";
     public static final String REQUEST_PROCESSING_QUEUE = "rpq";
     public static final String TOOLKIT = "t";
+    public static final String TOOLS_CONFIG = "tc";
     public static final String WORK = "w";
+    public static final String WORKFLOW_PROCESSING_THREADS = "wpt";
+    public static final String WORKFLOW_PROCESSING_QUEUE = "wpq";
     // The flag map maps the flag to the expected number of inputs for that flag
     private static final Map<String, Integer> FLAG_MAP = new HashMap<String, Integer>();
     private static final Map<String, String> FLAG_ALTERNATIVES_MAP = new HashMap<String, String>();
@@ -32,11 +34,11 @@ public class Flags {
     private final Map<String, List<String>> flags = new HashMap<String, List<String>>();
 
     static {
-        // Request processing threads flag
+        // Processing threads flag
         FLAG_MAP.put(EGAT_PROCESSING_THREADS, 1);
         FLAG_ALTERNATIVES_MAP.put("egat-processing-threads", EGAT_PROCESSING_THREADS);
 
-        // Request processing threads flag
+        // Processing queue size flag
         FLAG_MAP.put(EGAT_PROCESSING_QUEUE, 1);
         FLAG_ALTERNATIVES_MAP.put("egat-processing-queue", EGAT_PROCESSING_QUEUE);
         
@@ -56,23 +58,42 @@ public class Flags {
         FLAG_MAP.put(REQUEST_PROCESSING_THREADS, 1);
         FLAG_ALTERNATIVES_MAP.put("request-processing-threads", REQUEST_PROCESSING_THREADS);
 
-        // Request processing threads flag
+        // Request processing queue size flag
         FLAG_MAP.put(REQUEST_PROCESSING_QUEUE, 1);
         FLAG_ALTERNATIVES_MAP.put("request-processing-queue", REQUEST_PROCESSING_QUEUE);
-
+        
         // Toolkit flag
         FLAG_MAP.put(TOOLKIT, 1);
         FLAG_ALTERNATIVES_MAP.put("toolkit", TOOLKIT);
+        
+        // Toolkit configuration flag
+        FLAG_MAP.put(TOOLS_CONFIG, 1);
+        FLAG_ALTERNATIVES_MAP.put("tools-config", TOOLS_CONFIG);
 
         // Work flag
         FLAG_MAP.put(WORK, 1);
         FLAG_ALTERNATIVES_MAP.put("work", WORK);
+        
+        // Workflow processing threads flag
+        FLAG_MAP.put(WORKFLOW_PROCESSING_THREADS, 1);
+        FLAG_ALTERNATIVES_MAP.put("workflow-processing-threads", WORKFLOW_PROCESSING_THREADS);
+
+        // Workflow processing queue size flag
+        FLAG_MAP.put(WORKFLOW_PROCESSING_QUEUE, 1);
+        FLAG_ALTERNATIVES_MAP.put("workflow-processing-queue", WORKFLOW_PROCESSING_QUEUE);
     }
 
+    /**
+     * 
+     */
     public Flags() {
         this(new String[0]);
     }
 
+    /**
+     * 
+     * @param args 
+     */
     public Flags(String[] args) {
         final int argsLength = args.length;
         for (int i = 0; i < argsLength; i++) {
@@ -109,10 +130,20 @@ public class Flags {
         }
     }
 
+    /**
+     * 
+     * @param flag
+     * @return 
+     */
     public final boolean contains(String flag) {
         return flags.containsKey(flag);
     }
 
+    /**
+     * 
+     * @param flag
+     * @return 
+     */
     public final List<String> get(String flag) {
         List<String> value = flags.get(flag);
         if (value == null) {
@@ -121,25 +152,59 @@ public class Flags {
         return value;
     }
 
+    /**
+     * 
+     * @param flag
+     * @return 
+     */
     public final Boolean getBoolean(String flag) {
         return Boolean.valueOf(get(flag).get(0));
     }
 
+    /**
+     * 
+     * @param flag
+     * @return 
+     */
     public final Double getDouble(String flag) {
         return Double.valueOf(get(flag).get(0));
     }
 
+    /**
+     * 
+     * @param flag
+     * @return 
+     */
     public final Integer getInt(String flag) {
         return Integer.valueOf(get(flag).get(0));
     }
 
+    /**
+     * 
+     * @param flag
+     * @return 
+     */
     public final String getString(String flag) {
         return get(flag).get(0);
     }
 
+    /**
+     * 
+     * @param flag
+     * @param value 
+     */
     public static void setDefault(String flag, Object value) {
         List<String> args = new LinkedList<String>();
         args.add(String.valueOf(value));
         DEFAULTS.put(flag, args);
+    }
+    
+    /**
+     * 
+     * @param flag
+     * @return 
+     */
+    public static Object getDefault(String flag) {
+        return DEFAULTS.get(flag).get(0);
     }
 }

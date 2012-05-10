@@ -16,7 +16,7 @@ public class Util {
 
     public static final Gson GSON = new Gson();
 
-    public static final String sendRequest(String url) throws Exception {
+    public static String send(String url) throws Exception {
         URL urlObj = new URL(url);
         // Make the response
         BufferedReader br = new BufferedReader(new InputStreamReader(urlObj.openStream()));
@@ -32,7 +32,7 @@ public class Util {
         }
     }
 
-    public static final String sendPostRequest(String url, String body) throws Exception {
+    public static String send(String url, String body) throws Exception {
         OutputStreamWriter wr = null;
         BufferedReader br = null;
         try {

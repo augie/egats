@@ -55,6 +55,10 @@ form .item .name {
 form .item .input {
 }
 
+.error {
+    
+}
+
 .processes {
 }
 
@@ -71,6 +75,26 @@ form .item .input {
 }
 
 .processes .process .create-time {
+    font-size: 8pt;
+    margin: 0 0 0 10px;
+}
+
+.workflows {
+}
+
+.workflows .workflow {
+    margin: 0 0 10px 0;
+}
+
+.workflows .workflow div {
+    display: inline-block;
+}
+
+.workflows .workflow .status {
+    float: right;
+}
+
+.workflows .workflow .create-time {
     font-size: 8pt;
     margin: 0 0 0 10px;
 }

@@ -3,11 +3,12 @@ package egats;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.concurrent.Future;
 
 /**
  *
- * @author Augie Hill - augman85@gmail.com
+ * @author Augie Hill - augie@umich.edu
  */
 public class RequestListeningThread extends Thread {
 
@@ -20,6 +21,10 @@ public class RequestListeningThread extends Thread {
         Flags.setDefault(Flags.PORT, 55555);
     }
 
+    /**
+     * 
+     * @param server 
+     */
     public RequestListeningThread(Server server) {
         setName("Request Listening Thread");
         setPriority(Thread.MAX_PRIORITY);
@@ -27,6 +32,9 @@ public class RequestListeningThread extends Thread {
         this.port = server.getPort();
     }
 
+    /**
+     * 
+     */
     public final void close() {
         // Stop the listener
         run = false;
@@ -34,14 +42,25 @@ public class RequestListeningThread extends Thread {
         IOUtil.safeClose(ss);
     }
 
+    /**
+     * 
+     * @return 
+     */
     public final int getPort() {
         return port;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public final Server getServer() {
         return server;
     }
 
+    /**
+     * 
+     */
     @Override
     public final void run() {
         while (run) {
@@ -60,17 +79,23 @@ public class RequestListeningThread extends Thread {
                     // It's possible that a socket could be accepted but never processed. Need some utility that will clean up sockets
                     try {
                         // Waits until a request is made
-                        Socket s = ss.accept();
+                        Socket s = null;
+                        // Throws a meaningless exception when the listener is closed
+                        try {
+                            s = ss.accept();
+                        } catch (SocketException e) {
+                            continue;
+                        }
                         // Check if the s was returned for some other reason
                         if (s == null) {
                             continue;
                         }
                         // Create a request processor to handle the client request.
-                        RequestProcessor processor = new RequestProcessor(server, s);
+                        RequestProcess processor = new RequestProcess(server, s);
                         // Submit the processor for execution
                         Future f = null;
                         try {
-                            f = server.getExecutor().submit(processor);
+                            f = server.getRequestExecutor().submit(processor);
                         } catch (Exception e) {
                             // Notify the user that an exception occurred.
                             processor.couldNotProcess(new Response(Response.STATUS_CODE_ERROR, e.getMessage()));

@@ -7,17 +7,19 @@ import java.io.File;
 import java.lang.reflect.Method;
 
 /**
- *
- * @author Augie Hill - augman85@gmail.com
+ * The verbs.
+ * 
+ * @author Augie Hill - augie@umich.edu
  */
-public class EGATProcess extends DataObject implements Runnable {
+public class EGATSProcess extends DataObject implements Runnable {
 
-    public static final DataObjectCache<EGATProcess> CACHE = new DataObjectCache<EGATProcess>(Data.EGAT_PROCESSES, EGATProcess.class);
+    public static final DataObjectCache<EGATSProcess> CACHE = new DataObjectCache<EGATSProcess>(Data.PROCESSES, EGATSProcess.class);
     public static final String STATUS_CREATED = "Created";
     public static final String STATUS_SUBMITTED = "Submitted";
     public static final String STATUS_RUNNING = "Running";
     public static final String STATUS_COMPLETED = "Completed";
     public static final String STATUS_FAILED = "Failed";
+    // Transient variables are not serialized
     private transient Server server;
     private String status;
     private String exceptionMessage;
@@ -26,9 +28,12 @@ public class EGATProcess extends DataObject implements Runnable {
     private Long finishTime;
     private String name;
     private String methodPath;
-    private String[] args;
+    private String[] args = new String[0];
     private String outputID;
 
+    /**
+     * 
+     */
     @Override
     public final void run() {
         try {
@@ -37,9 +42,12 @@ public class EGATProcess extends DataObject implements Runnable {
             setStartTime(System.currentTimeMillis());
             save();
 
-            // Check the method
+            // Checks
             if (methodPath == null) {
                 throw new Exception("Method path is not set.");
+            }
+            if (args == null) {
+                throw new Exception("Argument list is not set.");
             }
 
             // Is this a python script or a java method?
@@ -115,8 +123,14 @@ public class EGATProcess extends DataObject implements Runnable {
             } else {
                 // Convert all '/' to '.'
                 String cMethodPath = methodPath.replaceAll("/", ".").trim();
-                String methodClassPath = cMethodPath.substring(0, cMethodPath.lastIndexOf("."));
+                String methodClassPath = cMethodPath;
+                if (cMethodPath.lastIndexOf(".") >= 0) {
+                    methodClassPath = cMethodPath.substring(0, cMethodPath.lastIndexOf("."));
+                }
                 Class methodClass = server.getToolkit().getClass(methodClassPath);
+                if (methodClass == null) {
+                    throw new Exception("Method class not found in toolkit: " + methodClassPath);
+                }
                 String methodName = cMethodPath.substring(cMethodPath.lastIndexOf(".") + 1);
 
                 // Check the args
@@ -166,7 +180,6 @@ public class EGATProcess extends DataObject implements Runnable {
             // All done
             setStatus(STATUS_COMPLETED);
         } catch (Exception e) {
-            e.printStackTrace();
             if (e instanceof NullPointerException) {
                 setExceptionMessage("Null pointer encountered.");
             } else if (e instanceof NoSuchMethodException) {
@@ -187,124 +200,230 @@ public class EGATProcess extends DataObject implements Runnable {
         }
     }
 
+    /**
+     * 
+     * @return 
+     */
     public final Server getServer() {
         return server;
     }
 
+    /**
+     * 
+     * @param server 
+     */
     public final void setServer(Server server) {
         this.server = server;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public final String[] getArgs() {
         return args;
     }
 
+    /**
+     * 
+     * @param args 
+     */
     public final void setArgs(String[] args) {
         this.args = args;
         put("args", args);
     }
 
+    /**
+     * 
+     */
     public final Long getCreateTime() {
         return createTime;
     }
 
+    /**
+     * 
+     * @param time 
+     */
     private void setCreateTime(Long time) {
         this.createTime = time;
         put("createTime", time);
     }
 
+    /**
+     * 
+     * @return 
+     */
     public final String getExceptionMessage() {
         return exceptionMessage;
     }
 
+    /**
+     * 
+     * @param message 
+     */
     private void setExceptionMessage(String message) {
         this.exceptionMessage = message;
         put("exceptionMessage", message);
     }
 
+    /**
+     * 
+     * @return 
+     */
     public final Long getFinishTime() {
         return finishTime;
     }
 
+    /**
+     * 
+     * @param time 
+     */
     private void setFinishTime(Long time) {
         this.finishTime = time;
         put("finishTime", time);
     }
 
+    /**
+     * 
+     * @return 
+     */
     public final String getMethodPath() {
         return methodPath;
     }
 
+    /**
+     * 
+     * @param methodPath 
+     */
     public final void setMethodPath(String methodPath) {
         this.methodPath = methodPath;
         put("methodPath", methodPath);
     }
 
+    /**
+     * 
+     * @return 
+     */
     public final String getName() {
         return name;
     }
-    
+
+    /**
+     * 
+     * @param name 
+     */
     public final void setName(String name) {
         this.name = name;
         put("name", name);
     }
-    
+
+    /**
+     * 
+     * @return 
+     */
     public final String getOutputID() {
         return outputID;
     }
 
+    /**
+     * 
+     * @param outputID 
+     */
     private void setOutputID(String outputID) {
         this.outputID = outputID;
         put("outputID", outputID);
     }
 
+    /**
+     * 
+     * @return 
+     */
     public final Long getStartTime() {
         return startTime;
     }
 
+    /**
+     * 
+     * @param time 
+     */
     private void setStartTime(Long time) {
         this.startTime = time;
         put("startTime", time);
     }
 
+    /**
+     * 
+     * @return 
+     */
     public final String getStatus() {
         return status;
     }
 
+    /**
+     * 
+     * @param status 
+     */
     private void setStatus(String status) {
         this.status = status;
         put("status", status);
     }
 
+    /**
+     * 
+     * @throws Exception 
+     */
     protected final void save() throws Exception {
-        Data.save(Data.EGAT_PROCESSES, this);
+        Data.save(Data.PROCESSES, this);
     }
 
+    /**
+     * 
+     * @return 
+     */
     public final String getJSON() {
         return JSON.serialize(this);
     }
 
+    /**
+     * 
+     * @return 
+     */
     @Override
     public int hashCode() {
         return toString().hashCode();
     }
 
+    /**
+     * 
+     * @param o
+     * @return 
+     */
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof EGATProcess)) {
+        if (!(o instanceof EGATSProcess)) {
             return false;
         }
-        return toString().equals(((EGATProcess) o).toString());
+        return toString().equals(((EGATSProcess) o).toString());
     }
 
+    /**
+     * 
+     * @return 
+     */
     @Override
     public String toString() {
         return getJSON();
     }
 
-    public static EGATProcess create(String json) throws Exception {
+    /**
+     * 
+     * @param json
+     * @return
+     * @throws Exception 
+     */
+    public static EGATSProcess create(String json) throws Exception {
         // Read the DBObject (attributes must be set separately)
-        EGATProcess o = CACHE.convert((DBObject) JSON.parse(json));
+        EGATSProcess o = CACHE.convert((DBObject) JSON.parse(json));
         // Set the attributes the user can set
         o.setName(o.getString("name"));
         o.setMethodPath(o.getString("methodPath"));
@@ -324,12 +443,24 @@ public class EGATProcess extends DataObject implements Runnable {
         return o;
     }
 
-    public static EGATProcess read(String json) throws Exception {
+    /**
+     * 
+     * @param json
+     * @return
+     * @throws Exception 
+     */
+    public static EGATSProcess read(String json) throws Exception {
         return read((DBObject) JSON.parse(json));
     }
-    
-    public static EGATProcess read(DBObject dbo) throws Exception {
-        EGATProcess o = CACHE.convert(dbo);
+
+    /**
+     * 
+     * @param dbo
+     * @return
+     * @throws Exception 
+     */
+    public static EGATSProcess read(DBObject dbo) throws Exception {
+        EGATSProcess o = CACHE.convert(dbo);
         o.setName(o.getString("name"));
         o.setMethodPath(o.getString("methodPath"));
         o.setArgs(((BasicDBList) o.get("args")).toArray(new String[0]));

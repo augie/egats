@@ -14,7 +14,7 @@ import java.net.Socket;
 
 /**
  * Contains commonly used utility methods related to input and output.
- * @author Augie Hill - augman85@gmail.com
+ * @author Augie Hill - augie@umich.edu
  */
 public class IOUtil {
     

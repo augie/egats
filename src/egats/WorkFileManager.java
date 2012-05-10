@@ -5,7 +5,7 @@ import java.io.FileWriter;
 
 /**
  * Manages the temporary working files of the server.
- * @author Augie Hill - augman85@gmail.com
+ * @author Augie Hill - augie@umich.edu
  */
 public class WorkFileManager {
 
@@ -15,10 +15,20 @@ public class WorkFileManager {
         Flags.setDefault(Flags.WORK, "work");
     }
 
+    /**
+     * 
+     * @param server 
+     */
     public WorkFileManager(Server server) {
         this.server = server;
     }
 
+    /**
+     * 
+     * @param o
+     * @return
+     * @throws Exception 
+     */
     public final File getFile(EGATSObject o) throws Exception {
         // Open a file handle to the working directory
         File workDir = new File(server.getFlags().getString(Flags.WORK));
@@ -58,6 +68,13 @@ public class WorkFileManager {
         return objFile;
     }
 
+    /**
+     * 
+     * @param o
+     * @param of
+     * @return
+     * @throws Exception 
+     */
     public final File getFile(EGATSObject o, EGATSObjectFile of) throws Exception {
         // Open a file handle to the working directory
         File workDir = new File(server.getFlags().getString(Flags.WORK));

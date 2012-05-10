@@ -2,7 +2,7 @@ package egats;
 
 /**
  *
- * @author Augie Hill - augman85@gmail.com
+ * @author Augie Hill - augie@umich.edu
  */
 public class Response extends Object {
 
@@ -15,14 +15,28 @@ public class Response extends Object {
     private String status, message, body;
     private int statusCode;
 
+    /**
+     * 
+     */
     public Response() {
         this(STATUS_CODE_OK, null, null);
     }
 
+    /**
+     * 
+     * @param statusCode
+     * @param message 
+     */
     public Response(int statusCode, String message) {
         this(statusCode, message, null);
     }
 
+    /**
+     * 
+     * @param statusCode
+     * @param message
+     * @param body 
+     */
     public Response(int statusCode, String message, String body) {
         this.statusCode = statusCode;
         if (statusCode == STATUS_CODE_OK) {
@@ -38,31 +52,60 @@ public class Response extends Object {
         this.body = body;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public final String getBody() {
         return body;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public final String getMessage() {
         return message;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public final int getStatusCode() {
         return statusCode;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public final String getStatus() {
         return status;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public final byte[] getBytes() {
         return toString().getBytes();
     }
 
+    /**
+     * 
+     * @return 
+     */
     @Override
     public int hashCode() {
         return toString().hashCode();
     }
 
+    /**
+     * 
+     * @param o
+     * @return 
+     */
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Response)) {
@@ -71,12 +114,21 @@ public class Response extends Object {
         return toString().equals(((Response) o).toString());
     }
 
+    /**
+     * 
+     * @return 
+     */
     @Override
     public String toString() {
         return Data.GSON.toJson(this);
     }
 
-    public static final Response fromJSON(String json) {
+    /**
+     * 
+     * @param json
+     * @return 
+     */
+    public static Response fromJSON(String json) {
         return Data.GSON.fromJson(json, Response.class);
     }
 }

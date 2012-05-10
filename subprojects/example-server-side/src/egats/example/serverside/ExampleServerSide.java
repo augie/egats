@@ -5,7 +5,7 @@ package egats.example.serverside;
  * It's entirely self-contained by design to demonstrate the ability of EGATS to
  * plug in independent libraries for execution.
  *
- * @author Augie Hill - augman85@gmail.com
+ * @author Augie Hill - augie@umich.edu
  */
 public class ExampleServerSide {
 

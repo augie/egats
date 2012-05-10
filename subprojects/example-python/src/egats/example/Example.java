@@ -1,12 +1,12 @@
 package egats.example;
 
-import egats.EGATProcess;
+import egats.EGATSProcess;
 import egats.EGATSObject;
 import egats.Response;
 
 /**
  *
- * @author Augie Hill - augman85@gmail.com
+ * @author Augie Hill - augie@umich.edu
  */
 public class Example {
 
@@ -21,7 +21,7 @@ public class Example {
         String expectedJSON = "This is an example.";
 
         // Create an EGAT process to run
-        EGATProcess egatProcess = new EGATProcess();
+        EGATSProcess egatProcess = new EGATSProcess();
         egatProcess.setMethodPath("example.py");
         egatProcess.setArgs(new String[]{});
 
@@ -43,14 +43,14 @@ public class Example {
             if (response.getStatusCode() != Response.STATUS_CODE_OK) {
                 throw new Exception("Problem checking process progress on server: " + response);
             }
-            egatProcess = EGATProcess.read(response.getBody());
+            egatProcess = EGATSProcess.read(response.getBody());
             if (egatProcess.getFinishTime() == null) {
                 System.out.println("Process is not finished yet. Waiting 100 ms. Total time " + (System.currentTimeMillis() - startTime) + " ms");
             }
         } while (egatProcess.getFinishTime() == null);
 
         // Was there a problem?
-        if (!egatProcess.getStatus().equals(EGATProcess.STATUS_COMPLETED)) {
+        if (!egatProcess.getStatus().equals(EGATSProcess.STATUS_COMPLETED)) {
             throw new Exception("The process failed to execute with the following error: " + egatProcess.getExceptionMessage());
         }
 

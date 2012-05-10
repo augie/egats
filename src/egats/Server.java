@@ -2,50 +2,84 @@ package egats;
 
 /**
  *
- * @author Augie Hill - augman85@gmail.com
+ * @author Augie Hill - augie@umich.edu
  */
 public class Server {
 
     private final RequestListeningThread listener;
-    private final RequestProcessorExecutor executor;
-    private final EGATProcessExecutor egatExecutor;
+    private final RequestProcessExecutor requestExecutor;
+    private final EGATSProcessExecutor processExecutor;
+    private final EGATSWorkflowExecutor workflowExecutor;
     private final Toolkit toolkit;
     private final WorkFileManager workFileManager;
     private final Flags flags;
+    private boolean listening = false;
 
     static {
         Flags.setDefault(Flags.HOST, "localhost");
     }
 
+    /**
+     * 
+     * @param flags
+     * @throws Exception 
+     */
     public Server(Flags flags) throws Exception {
         this.flags = flags;
         listener = new RequestListeningThread(this);
-        executor = new RequestProcessorExecutor(this);
-        egatExecutor = new EGATProcessExecutor(this);
+        requestExecutor = new RequestProcessExecutor(this);
+        processExecutor = new EGATSProcessExecutor(this);
+        workflowExecutor = new EGATSWorkflowExecutor(this);
         toolkit = new Toolkit(this);
         workFileManager = new WorkFileManager(this);
     }
 
-    public final void close() {
-        listener.close();
+    /**
+     * 
+     */
+    public final synchronized void close() {
+        if (listening) {
+            listener.close();
+            listening = false;
+        }
     }
 
+    /**
+     * 
+     */
     public final Flags getFlags() {
         return flags;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public final String getHost() {
         return flags.getString(Flags.HOST);
     }
 
+    /**
+     * 
+     * @return 
+     */
     public final int getPort() {
         return flags.getInt(Flags.PORT);
     }
 
+    /**
+     * 
+     * @return 
+     */
     public final String getURL() {
         return "http://" + getHost() + ":" + getPort();
     }
 
+    /**
+     * 
+     * @param path
+     * @return 
+     */
     public final String getURL(String path) {
         if (!path.startsWith("/")) {
             path = "/" + path;
@@ -53,37 +87,78 @@ public class Server {
         return getURL() + path;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public final RequestListeningThread getListener() {
         return listener;
     }
 
-    public final RequestProcessorExecutor getExecutor() {
-        return executor;
+    /**
+     * 
+     * @return 
+     */
+    public final RequestProcessExecutor getRequestExecutor() {
+        return requestExecutor;
     }
 
-    public final EGATProcessExecutor getEGATExecutor() {
-        return egatExecutor;
+    /**
+     * 
+     * @return 
+     */
+    public final EGATSProcessExecutor getProcessExecutor() {
+        return processExecutor;
+    }
+    
+    /**
+     * 
+     * @return 
+     */
+    public final EGATSWorkflowExecutor getWorkflowExecutor() {
+        return workflowExecutor;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public final Toolkit getToolkit() {
         return toolkit;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public final WorkFileManager getWorkFileManager() {
         return workFileManager;
     }
 
+    /**
+     * 
+     * @param e 
+     */
     public final void logException(Exception e) {
-        if (!Flags.TESTING) {
-            e.printStackTrace();
+        e.printStackTrace();
+    }
+
+    /**
+     * 
+     */
+    public final synchronized void start() {
+        // Start listening and responding to requests if not already doing so.
+        if (!listening) {
+            listener.start();
+            listening = true;
         }
     }
 
-    public final void start() {
-        // Start listening and responding to requests.
-        listener.start();
-    }
-
+    /**
+     * 
+     * @param args
+     * @throws Exception 
+     */
     public static void main(String[] args) throws Exception {
         // Process the arguments
         Flags flags = new Flags(args);

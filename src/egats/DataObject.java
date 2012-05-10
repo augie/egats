@@ -3,17 +3,26 @@ package egats;
 import com.mongodb.BasicDBObject;
 
 /**
- *
- * @author Augie Hill - augman85@gmail.com
+ * The basic database object for this project.
+ * 
+ * @author Augie Hill - augie@umich.edu
  */
 public class DataObject extends BasicDBObject {
 
     public static final String ATTR_ID = "_id";
 
+    /**
+     * 
+     * @return 
+     */
     public final String getID() {
         return getString(ATTR_ID);
     }
 
+    /**
+     * 
+     * @param id 
+     */
     protected final void setID(String id) {
         put(ATTR_ID, id);
     }

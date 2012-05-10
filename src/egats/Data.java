@@ -7,8 +7,8 @@ import com.mongodb.Mongo;
 import com.mongodb.WriteResult;
 
 /**
- *
- * @author Augie Hill - augman85@gmail.com
+ * Class of static variables and methods for interacting with the database.
+ * @author Augie Hill - augie@umich.edu
  */
 public class Data {
 
@@ -16,20 +16,28 @@ public class Data {
     public static final Gson GSON = new Gson();
     public static Mongo MONGO;
     public static DB EGATS;
-    public static DBCollection EGAT_PROCESSES, OBJECTS;
+    public static DBCollection PROCESSES, OBJECTS, WORKFLOWS;
 
     static {
         try {
             MONGO = new Mongo("localhost", 27017);
             EGATS = MONGO.getDB("egats");
-            EGAT_PROCESSES = EGATS.getCollection("egat_processes");
+            PROCESSES = EGATS.getCollection("egat_processes");
+            WORKFLOWS = EGATS.getCollection("workflows");
             OBJECTS = EGATS.getCollection("objects");
         } catch (Exception e) {
+            e.printStackTrace();
             // Log
             // TODO
         }
     }
 
+    /**
+     * Saves the given object to the given database collection.
+     * @param c
+     * @param o
+     * @throws Exception 
+     */
     public static void save(DBCollection c, DataObject o) throws Exception {
         // Do not do anything if testing
         if (Flags.TESTING) {

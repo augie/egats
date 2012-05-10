@@ -1,19 +1,22 @@
 package egats.example;
 
-import egats.EGATProcess;
+import com.mongodb.util.JSON;
+import egats.EGATSProcess;
 import egats.EGATSObject;
 import egats.Response;
 import egats.example.serverside.ExampleServerSide;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  *
- * @author Augie Hill - augman85@gmail.com
+ * @author Augie Hill - augie@umich.edu
  */
 public class Example {
 
     public static final String HOST = "egat.eecs.umich.edu";
-    //public static final String HOST = "localhost";
-    public static final String PORT = "80";
+//    public static final String HOST = "localhost";
+    public static final String PORT = "55555";
 
     public static void main(String[] args) throws Exception {
         long startTime = System.currentTimeMillis();
@@ -35,54 +38,69 @@ public class Example {
         arg2Obj.setClassPath(arg2.getClass().getName());
         arg2Obj.setObject(Util.GSON.toJson(arg2));
 
+        // Put objects in a list
+        List<EGATSObject> argList = new LinkedList<EGATSObject>();
+        argList.add(arg1Obj);
+        argList.add(arg2Obj);
+
         // Send the args to the server
         String objectURL = "http://" + HOST + ":" + PORT + "/o";
-        Response response = Response.fromJSON(Util.sendPostRequest(objectURL, arg1Obj.getJSON()));
+        Response response = Response.fromJSON(Util.send(objectURL, JSON.serialize(argList)));
         if (response.getStatusCode() != Response.STATUS_CODE_OK) {
             throw new Exception("Problem sending first argument to server: " + response);
         }
+
+        // Read the IDs of the args
+        List<String> argIDs = (List<String>) JSON.parse(response.getBody());
         System.out.println("Stored on server: " + arg1Obj.getJSON());
-        String arg1ID = response.getBody();
-        System.out.println("Arg 1 ID: " + arg1ID);
-        response = Response.fromJSON(Util.sendPostRequest(objectURL, arg2Obj.getJSON()));
-        if (response.getStatusCode() != Response.STATUS_CODE_OK) {
-            throw new Exception("Problem sending second argument to server: " + response);
-        }
+        System.out.println("Arg 1 ID: " + argIDs.get(0));
         System.out.println("Stored on server: " + arg2Obj.getJSON());
-        String arg2ID = response.getBody();
-        System.out.println("Arg 2 ID: " + arg2ID);
+        System.out.println("Arg 2 ID: " + argIDs.get(1));
 
         // Create an EGAT process to run
-        EGATProcess egatProcess = new EGATProcess();
+        EGATSProcess egatProcess = new EGATSProcess();
         egatProcess.setMethodPath("egats.example.serverside.ExampleServerSide.fakeEGATProcess");
-        egatProcess.setArgs(new String[]{arg1ID, arg2ID});
+        egatProcess.setArgs(new String[]{argIDs.get(0), argIDs.get(1)});
+
+        // Put process in a list
+        List<EGATSProcess> processList = new LinkedList<EGATSProcess>();
+        processList.add(egatProcess);
 
         // Send the process request to the server
         String processURL = "http://" + HOST + ":" + PORT + "/p";
-        response = Response.fromJSON(Util.sendPostRequest(processURL, egatProcess.getJSON()));
+        response = Response.fromJSON(Util.send(processURL, JSON.serialize(processList)));
         if (response.getStatusCode() != Response.STATUS_CODE_OK) {
             throw new Exception("Problem sending process request to server: " + response);
         }
+
         System.out.println("Requested process: " + egatProcess.getJSON());
+        List<String> processIDs = (List<String>) JSON.parse(response.getBody());
+        String processID = processIDs.get(0);
+        System.out.println("Process ID: " + processID);
 
         // Poll server until our process is completed
-        String processID = response.getBody();
-        System.out.println("Process ID: " + processID);
         String processObjURL = processURL + "/" + processID;
         do {
             Thread.sleep(100);
-            response = Response.fromJSON(Util.sendRequest(processObjURL));
+
+            // Fetch the process
+            response = Response.fromJSON(Util.send(processObjURL));
             if (response.getStatusCode() != Response.STATUS_CODE_OK) {
-                throw new Exception("Problem checking process progress on server: " + response);
+                throw new Exception("Problem checking process progress on server: " + response.getBody());
             }
-            egatProcess = EGATProcess.read(response.getBody());
+
+            // Read process
+            List<Object> updatedProcessList = (List<Object>) JSON.parse(response.getBody());
+            egatProcess = EGATSProcess.read(JSON.serialize(updatedProcessList.get(0)));
+
+            // Is it finished?
             if (egatProcess.getFinishTime() == null) {
                 System.out.println("Process is not finished yet. Waiting 100 ms. Total time " + (System.currentTimeMillis() - startTime) + " ms");
             }
         } while (egatProcess.getFinishTime() == null);
 
         // Was there a problem?
-        if (!egatProcess.getStatus().equals(EGATProcess.STATUS_COMPLETED)) {
+        if (!egatProcess.getStatus().equals(EGATSProcess.STATUS_COMPLETED)) {
             throw new Exception("The process failed to execute with the following error: " + egatProcess.getExceptionMessage());
         }
 
@@ -92,11 +110,14 @@ public class Example {
 
         // Get the output object
         String outputObjURL = objectURL + "/" + outputID;
-        response = Response.fromJSON(Util.sendRequest(outputObjURL));
+        response = Response.fromJSON(Util.send(outputObjURL));
         if (response.getStatusCode() != Response.STATUS_CODE_OK) {
             throw new Exception("There was a proble getting the output from the server: " + response);
         }
-        EGATSObject outputObj = EGATSObject.read(response.getBody());
+
+        // Read object
+        List<Object> outputObjectList = (List<Object>) JSON.parse(response.getBody());
+        EGATSObject outputObj = EGATSObject.read(JSON.serialize(outputObjectList.get(0)));
         System.out.println("Output: " + outputObj.getJSON());
 
         // Print the JSON of the results
