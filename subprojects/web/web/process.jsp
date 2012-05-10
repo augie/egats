@@ -2,7 +2,7 @@
 <h2>Process</h2>
 <%
 if (request.getParameter("id") != null) {
-    EGATProcess o = EGATProcessCache.get(request.getParameter("id"));
+    EGATSProcess o = EGATSProcessCache.get(request.getParameter("id"));
     %>
     <table class="process">
         <tr>

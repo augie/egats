@@ -2,8 +2,8 @@
 <h2>Processes</h2>
 <div class="processes">
 <%    
-List<EGATProcess> list = EGATProcessCache.get();
-for (EGATProcess p : list) {
+List<EGATSProcess> list = EGATSProcessCache.get();
+for (EGATSProcess p : list) {
     %>
     <div class="process">
         <div class="name">

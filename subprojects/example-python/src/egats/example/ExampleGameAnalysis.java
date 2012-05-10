@@ -1,6 +1,6 @@
 package egats.example;
 
-import egats.EGATProcess;
+import egats.EGATSProcess;
 import egats.EGATSObject;
 import egats.EGATSObjectFile;
 import egats.IOUtil;
@@ -8,7 +8,7 @@ import egats.Response;
 
 /**
  *
- * @author Augie Hill - augman85@gmail.com
+ * @author Augie Hill - augie@umich.edu
  */
 public class ExampleGameAnalysis {
 
@@ -37,7 +37,7 @@ public class ExampleGameAnalysis {
         System.out.println("Arg 1 ID: " + arg1ID);
 
         // Create an EGAT process to run
-        EGATProcess egatProcess = new EGATProcess();
+        EGATSProcess egatProcess = new EGATSProcess();
         egatProcess.setMethodPath("GameAnalysis/Analysis.py");
         egatProcess.setArgs(new String[]{"-r", "1e-4", "-d", "1e-3", "egats-obj-file:" + arg1ID});
 
@@ -59,14 +59,14 @@ public class ExampleGameAnalysis {
             if (response.getStatusCode() != Response.STATUS_CODE_OK) {
                 throw new Exception("Problem checking process progress on server: " + response);
             }
-            egatProcess = EGATProcess.read(response.getBody());
+            egatProcess = EGATSProcess.read(response.getBody());
             if (egatProcess.getFinishTime() == null) {
                 System.out.println("Process is not finished yet. Waiting 500 ms. Total time " + (System.currentTimeMillis() - startTime) + " ms");
             }
         } while (egatProcess.getFinishTime() == null);
 
         // Was there a problem?
-        if (!egatProcess.getStatus().equals(EGATProcess.STATUS_COMPLETED)) {
+        if (!egatProcess.getStatus().equals(EGATSProcess.STATUS_COMPLETED)) {
             throw new Exception("The process failed to execute with the following error: " + egatProcess.getExceptionMessage());
         }
 

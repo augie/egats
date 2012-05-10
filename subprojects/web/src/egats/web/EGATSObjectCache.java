@@ -6,13 +6,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * Objects are immutable, so caching isn't a problem.
  * @author Augie
  */
 public class EGATSObjectCache {
 
     private static Map<String, SoftReference<EGATSObject>> cache = new HashMap<String, SoftReference<EGATSObject>>();
 
+    /**
+     * 
+     * @param id
+     * @return
+     * @throws Exception 
+     */
     public static EGATSObject get(String id) throws Exception {
         if (id == null) {
             return null;

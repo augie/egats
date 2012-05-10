@@ -7,31 +7,33 @@ import java.util.concurrent.TimeUnit;
 
 /**
  *
- * @author Augie Hill - augman85@gmail.com
+ * @author Augie Hill - augie@umich.edu
  */
-public class RequestProcessorExecutor extends ThreadPoolExecutor {
-
-    private final Server server;
+public class RequestProcessExecutor extends ThreadPoolExecutor {
 
     static {
         Flags.setDefault(Flags.REQUEST_PROCESSING_THREADS, 2);
-        Flags.setDefault(Flags.REQUEST_PROCESSING_QUEUE, 100);
+        Flags.setDefault(Flags.REQUEST_PROCESSING_QUEUE, 1000);
     }
 
-    public RequestProcessorExecutor(Server server) {
+    /**
+     * 
+     * @param server 
+     */
+    public RequestProcessExecutor(Server server) {
         super(server.getFlags().getInt(Flags.REQUEST_PROCESSING_THREADS),
                 server.getFlags().getInt(Flags.REQUEST_PROCESSING_THREADS),
                 100,
                 TimeUnit.SECONDS,
                 new LinkedBlockingQueue<Runnable>(server.getFlags().getInt(Flags.REQUEST_PROCESSING_QUEUE)));
-        this.server = server;
     }
 
-    public Server getServer() {
-        return server;
-    }
-
-    public synchronized Future submit(RequestProcessor rp) {
+    /**
+     * 
+     * @param rp
+     * @return 
+     */
+    public synchronized Future submit(RequestProcess rp) {
         // Do not use the blocking functionality of the blocking queue
         if (getQueue().remainingCapacity() == 0) {
             // A return of null denotes a full queue

@@ -6,18 +6,26 @@ import java.io.InputStreamReader;
 
 /**
  *
- * @author Augie Hill - augman85@gmail.com
+ * @author Augie Hill - augie@umich.edu
  */
 public class StreamToBufferThread extends Thread {
 
     private InputStream is;
     private StringBuffer buffer;
 
+    /**
+     * 
+     * @param is
+     * @param buffer 
+     */
     public StreamToBufferThread(InputStream is, StringBuffer buffer) {
         this.is = is;
         this.buffer = buffer;
     }
 
+    /**
+     * 
+     */
     @Override
     public void run() {
         BufferedReader reader = null;
@@ -34,6 +42,8 @@ public class StreamToBufferThread extends Thread {
                 buffer.append(line);
             }
         } catch (Exception e) {
+            // Log the exception
+            // TODO
         } finally {
             IOUtil.safeClose(reader);
         }
