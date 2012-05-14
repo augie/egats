@@ -13,7 +13,7 @@
     </tr>
     <tr> 
         <td>URL</td>
-        <td><%= API.getObjectURL("<i>$ids</i>") %></td>
+        <td><%= API.getURL(API.OBJECTS_FOLDER, "<i>$ids</i>") %></td>
     </tr>
     <tr>
         <td>Parameters</td>
@@ -42,7 +42,7 @@
     </tr>
     <tr> 
         <td>URL</td>
-        <td><%= API.getProcessURL("<i>$ids</i>") %></td>
+        <td><%= API.getURL(API.PROCESSES_FOLDER, "<i>$ids</i>") %></td>
     </tr>
     <tr>
         <td>Parameters</td>
@@ -71,7 +71,7 @@
     </tr>
     <tr> 
         <td>URL</td>
-        <td><%= API.getWorkflowURL("<i>$ids</i>") %></td>
+        <td><%= API.getURL(API.WORKFLOWS_FOLDER, "<i>$ids</i>") %></td>
     </tr>
     <tr>
         <td>Parameters</td>
@@ -100,7 +100,7 @@
     </tr>
     <tr> 
         <td>URL</td>
-        <td><%= API.HOST %><%= API.PROCESS_LIST_FOLDER %><i>$timestamp</i></td>
+        <td><%=API.getURL(API.PROCESSES_BY_TIMESTAMP_FOLDER, "<i>$timestamp</i>")%></td>
     </tr>
     <tr>
         <td>Parameters</td>
@@ -128,7 +128,7 @@
     </tr>
     <tr> 
         <td>URL</td>
-        <td><%= API.HOST %><%= API.WORKFLOW_LIST_FOLDER %><i>$timestamp</i></td>
+        <td><%=API.getURL(API.WORKFLOWS_BY_TIMESTAMP_FOLDER, "<i>$timestamp</i>")%></td>
     </tr>
     <tr>
         <td>Parameters</td>
@@ -156,7 +156,7 @@
     </tr>
     <tr> 
         <td>URL</td>
-        <td><%= API.CREATE_OBJECT_URL %></td>
+        <td><%= API.getURL(API.OBJECTS_FOLDER) %></td>
     </tr>
     <tr>
         <td>Body</td>
@@ -194,7 +194,7 @@
     </tr>
     <tr> 
         <td>URL</td>
-        <td><%= API.CREATE_PROCESS_URL %></td>
+        <td><%= API.getURL(API.PROCESSES_FOLDER) %></td>
     </tr>
     <tr>
         <td>Body</td>
@@ -233,7 +233,7 @@
     </tr>
     <tr> 
         <td>URL</td>
-        <td><%= API.CREATE_WORKFLOW_URL %></td>
+        <td><%= API.getURL(API.WORKFLOWS_FOLDER) %></td>
     </tr>
     <tr>
         <td>Body</td>
@@ -294,7 +294,7 @@
             return;
         }
         
-        $("#constructed-request").html(method + " <%= API.HOST %>" + folder + param);
+        $("#constructed-request").html(method + " <%= API.getHost() %>" + folder + param);
         $.get('scripts/api.jsp?method=' + method + '&folder=' + folder + '&param=' + param + '&body=' + body, function(data) {
             $("#response").html(data);
         });
@@ -316,11 +316,11 @@
             <td>
                 <select id="subfolder" name="subfolder">
                     <option value=""></option>
-                    <option value="<%= API.OBJECT_FOLDER %>">Objects</option>
-                    <option value="<%= API.PROCESS_FOLDER %>">Processes</option>
-                    <option value="<%= API.WORKFLOW_FOLDER %>">Workflows</option>
-                    <option value="<%= API.PROCESS_LIST_FOLDER %>">Processes By Timestamp</option>
-                    <option value="<%= API.WORKFLOW_LIST_FOLDER %>">Workflows By Timestamp</option>
+                    <option value="<%= API.OBJECTS_FOLDER %>">Objects</option>
+                    <option value="<%= API.PROCESSES_FOLDER %>">Processes</option>
+                    <option value="<%= API.WORKFLOWS_FOLDER %>">Workflows</option>
+                    <option value="<%= API.PROCESSES_BY_TIMESTAMP_FOLDER %>">Processes By Timestamp</option>
+                    <option value="<%= API.WORKFLOWS_BY_TIMESTAMP_FOLDER %>">Workflows By Timestamp</option>
                 </select>
             </td>
         </tr>

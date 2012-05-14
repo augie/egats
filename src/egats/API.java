@@ -40,6 +40,15 @@ public class API {
      */
     public static void setHost(String host) {
         HOST = host;
+        if (HOST.startsWith("http://")) {
+            HOST = HOST.substring(7);
+        }
+        if (HOST.startsWith("https://")) {
+            HOST = HOST.substring(8);
+        }
+        if (!HOST.endsWith("/")) {
+            HOST = HOST + "/";
+        }
     }
 
     /**
@@ -115,9 +124,21 @@ public class API {
         sb.append("http://");
         sb.append(HOST);
         if (folder != null) {
+            if (folder.startsWith("/")) {
+                folder = folder.substring(1);
+            }
+            if (!folder.endsWith("/")) {
+                folder = folder + "/";
+            }
             sb.append(folder);
         }
         if (param != null) {
+            if (param.startsWith("/")) {
+                param = param.substring(1);
+            }
+            if (param.endsWith("/")) {
+                param = param.substring(0, param.length() - 1);
+            }
             sb.append(param);
         }
         return sb.toString();
@@ -543,7 +564,7 @@ public class API {
      * @throws Exception 
      */
     public static List<String> getToolkit() throws Exception {
-        Response response = send(TOOLKIT_FOLDER);
+        Response response = send(getURL(TOOLKIT_FOLDER));
         return (List<String>) JSON.parse(response.getBody());
     }
 }

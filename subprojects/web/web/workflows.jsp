@@ -16,7 +16,7 @@ for (EGATSWorkflow w : list) {
             </a>
         </div>
         <div class="status"><%=w.getStatus()%></div>
-        <div class="create-time">(Created <%=WebUtil.getDate(w.getCreateTime())%>)</div>
+        <div class="create-time">(Created <%=Util.getDate(w.getCreateTime())%>)</div>
     </div>
     <%
 }

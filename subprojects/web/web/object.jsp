@@ -12,15 +12,15 @@ if (request.getParameter("id") != null) {
         <table class="process">
             <tr>
                 <td width="15%">ID</td>
-                <td><%=WebUtil.getString(o.getID())%></td>
+                <td><%=Util.getString(o.getID())%></td>
             </tr>
             <tr>
                 <td>Class</td>
-                <td><%=WebUtil.getString(o.getClassPath())%></td>
+                <td><%=Util.getString(o.getClassPath())%></td>
             </tr>
             <tr>
                 <td>Created</td>
-                <td><%=WebUtil.getDate(o.getCreateTime())%></td>
+                <td><%=Util.getDate(o.getCreateTime())%></td>
             </tr>
             <tr>
                 <td>

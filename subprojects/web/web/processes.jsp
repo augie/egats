@@ -16,7 +16,7 @@ for (EGATSProcess p : list) {
             </a>
         </div>
         <div class="status"><%=p.getStatus()%></div>
-        <div class="create-time">(Created <%=WebUtil.getDate(p.getCreateTime())%>)</div>
+        <div class="create-time">(Created <%=Util.getDate(p.getCreateTime())%>)</div>
     </div>
     <%            
 }
