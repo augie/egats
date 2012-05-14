@@ -1,9 +1,9 @@
 package egats.example;
 
-import com.mongodb.util.JSON;
+import egats.API;
+import egats.Data;
 import egats.EGATSProcess;
 import egats.EGATSObject;
-import egats.Response;
 import egats.example.serverside.ExampleServerSide;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,11 +14,11 @@ import java.util.List;
  */
 public class Example {
 
-    public static final String HOST = "egat.eecs.umich.edu";
-//    public static final String HOST = "localhost";
-    public static final String PORT = "55555";
+//    public static final String HOST = "egat.eecs.umich.edu:55555";
+    public static final String HOST = "localhost:55555";
 
     public static void main(String[] args) throws Exception {
+        API.setHost(HOST);
         long startTime = System.currentTimeMillis();
 
         // Create the arguments
@@ -26,17 +26,17 @@ public class Example {
         boolean[] arg2 = new boolean[]{true, false, true, false};
 
         // Get the expected output
-        String expectedJSON = Util.GSON.toJson(ExampleServerSide.fakeEGATProcess(arg1, arg2));
+        String expectedJSON = Data.GSON.toJson(ExampleServerSide.fakeEGATProcess(arg1, arg2));
 
         // Turn the first arg into an object
         EGATSObject arg1Obj = new EGATSObject();
         arg1Obj.setClassPath(arg1.getClass().getName());
-        arg1Obj.setObject(Util.GSON.toJson(arg1));
+        arg1Obj.setObject(Data.GSON.toJson(arg1));
 
         // Turn the second arg into an object
         EGATSObject arg2Obj = new EGATSObject();
         arg2Obj.setClassPath(arg2.getClass().getName());
-        arg2Obj.setObject(Util.GSON.toJson(arg2));
+        arg2Obj.setObject(Data.GSON.toJson(arg2));
 
         // Put objects in a list
         List<EGATSObject> argList = new LinkedList<EGATSObject>();
@@ -44,14 +44,7 @@ public class Example {
         argList.add(arg2Obj);
 
         // Send the args to the server
-        String objectURL = "http://" + HOST + ":" + PORT + "/o";
-        Response response = Response.fromJSON(Util.send(objectURL, JSON.serialize(argList)));
-        if (response.getStatusCode() != Response.STATUS_CODE_OK) {
-            throw new Exception("Problem sending first argument to server: " + response);
-        }
-
-        // Read the IDs of the args
-        List<String> argIDs = (List<String>) JSON.parse(response.getBody());
+        List<String> argIDs = API.createObjects(argList);
         System.out.println("Stored on server: " + arg1Obj.getJSON());
         System.out.println("Arg 1 ID: " + argIDs.get(0));
         System.out.println("Stored on server: " + arg2Obj.getJSON());
@@ -62,36 +55,16 @@ public class Example {
         egatProcess.setMethodPath("egats.example.serverside.ExampleServerSide.fakeEGATProcess");
         egatProcess.setArgs(new String[]{argIDs.get(0), argIDs.get(1)});
 
-        // Put process in a list
-        List<EGATSProcess> processList = new LinkedList<EGATSProcess>();
-        processList.add(egatProcess);
-
         // Send the process request to the server
-        String processURL = "http://" + HOST + ":" + PORT + "/p";
-        response = Response.fromJSON(Util.send(processURL, JSON.serialize(processList)));
-        if (response.getStatusCode() != Response.STATUS_CODE_OK) {
-            throw new Exception("Problem sending process request to server: " + response);
-        }
-
-        System.out.println("Requested process: " + egatProcess.getJSON());
-        List<String> processIDs = (List<String>) JSON.parse(response.getBody());
-        String processID = processIDs.get(0);
+        String processID = API.createProcess(egatProcess);
         System.out.println("Process ID: " + processID);
 
         // Poll server until our process is completed
-        String processObjURL = processURL + "/" + processID;
         do {
             Thread.sleep(100);
 
-            // Fetch the process
-            response = Response.fromJSON(Util.send(processObjURL));
-            if (response.getStatusCode() != Response.STATUS_CODE_OK) {
-                throw new Exception("Problem checking process progress on server: " + response.getBody());
-            }
-
-            // Read process
-            List<Object> updatedProcessList = (List<Object>) JSON.parse(response.getBody());
-            egatProcess = EGATSProcess.read(JSON.serialize(updatedProcessList.get(0)));
+            // Get process
+            egatProcess = API.getProcess(processID);
 
             // Is it finished?
             if (egatProcess.getFinishTime() == null) {
@@ -109,15 +82,7 @@ public class Example {
         System.out.println("Process completed successfully. Result ID: " + outputID);
 
         // Get the output object
-        String outputObjURL = objectURL + "/" + outputID;
-        response = Response.fromJSON(Util.send(outputObjURL));
-        if (response.getStatusCode() != Response.STATUS_CODE_OK) {
-            throw new Exception("There was a proble getting the output from the server: " + response);
-        }
-
-        // Read object
-        List<Object> outputObjectList = (List<Object>) JSON.parse(response.getBody());
-        EGATSObject outputObj = EGATSObject.read(JSON.serialize(outputObjectList.get(0)));
+        EGATSObject outputObj = API.getObject(outputID);
         System.out.println("Output: " + outputObj.getJSON());
 
         // Print the JSON of the results

@@ -1,5 +1,6 @@
 package egats.web;
 
+import egats.API;
 import egats.EGATSWorkflow;
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
@@ -47,6 +48,6 @@ public class EGATSWorkflowCache {
      * @throws Exception 
      */
     public static List<EGATSWorkflow> get() throws Exception {
-        return API.getWorkflows((long) 0);
+        return API.getWorkflowsByTimestamp(0l);
     }
 }

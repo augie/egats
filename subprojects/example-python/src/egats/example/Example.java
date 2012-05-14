@@ -1,8 +1,8 @@
 package egats.example;
 
+import egats.API;
 import egats.EGATSProcess;
 import egats.EGATSObject;
-import egats.Response;
 
 /**
  *
@@ -10,11 +10,11 @@ import egats.Response;
  */
 public class Example {
 
-    public static final String HOST = "egat.eecs.umich.edu";
-    //public static final String HOST = "localhost";
-    public static final String PORT = "80";
+//    public static final String HOST = "egat.eecs.umich.edu:55555";
+    public static final String HOST = "localhost:55555";
 
     public static void main(String[] args) throws Exception {
+        API.setHost(HOST);
         long startTime = System.currentTimeMillis();
 
         // The expected output
@@ -26,24 +26,12 @@ public class Example {
         egatProcess.setArgs(new String[]{});
 
         // Send the process request to the server
-        String processURL = "http://" + HOST + ":" + PORT + "/p";
-        Response response = Response.fromJSON(Util.sendPostRequest(processURL, egatProcess.getJSON()));
-        if (response.getStatusCode() != Response.STATUS_CODE_OK) {
-            throw new Exception("Problem sending process request to server: " + response);
-        }
-        System.out.println("Requested process: " + egatProcess.getJSON());
+        String processID = API.createProcess(egatProcess);
 
         // Poll server until our process is completed
-        String processID = response.getBody();
-        System.out.println("Process ID: " + processID);
-        String processObjURL = processURL + "/" + processID;
         do {
             Thread.sleep(100);
-            response = Response.fromJSON(Util.sendRequest(processObjURL));
-            if (response.getStatusCode() != Response.STATUS_CODE_OK) {
-                throw new Exception("Problem checking process progress on server: " + response);
-            }
-            egatProcess = EGATSProcess.read(response.getBody());
+            egatProcess = API.getProcess(processID);
             if (egatProcess.getFinishTime() == null) {
                 System.out.println("Process is not finished yet. Waiting 100 ms. Total time " + (System.currentTimeMillis() - startTime) + " ms");
             }
@@ -59,13 +47,7 @@ public class Example {
         System.out.println("Process completed successfully. Result ID: " + outputID);
 
         // Get the output object
-        String objectURL = "http://" + HOST + ":" + PORT + "/o";
-        String outputObjURL = objectURL + "/" + outputID;
-        response = Response.fromJSON(Util.sendRequest(outputObjURL));
-        if (response.getStatusCode() != Response.STATUS_CODE_OK) {
-            throw new Exception("There was a proble getting the output from the server: " + response);
-        }
-        EGATSObject outputObj = EGATSObject.read(response.getBody());
+        EGATSObject outputObj = API.getObject(outputID);
         System.out.println("Output: " + outputObj.getJSON());
 
         // Print the JSON of the results

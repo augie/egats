@@ -5,7 +5,8 @@ package egats;
  * @author Augie Hill - augie@umich.edu
  */
 public class Server {
-
+    
+    public static final String DEFAULT_HOST = "localhost";
     private final RequestListeningThread listener;
     private final RequestProcessExecutor requestExecutor;
     private final EGATSProcessExecutor processExecutor;
@@ -16,7 +17,7 @@ public class Server {
     private boolean listening = false;
 
     static {
-        Flags.setDefault(Flags.HOST, "localhost");
+        Flags.setDefault(Flags.HOST, DEFAULT_HOST);
     }
 
     /**

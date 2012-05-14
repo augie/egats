@@ -61,7 +61,7 @@ public class WorkFileManager {
                 writer = new FileWriter(objFile);
                 writer.write(o.getObject());
             } finally {
-                IOUtil.safeClose(writer);
+                IOUtils.closeQuietly(writer);
             }
         }
 
@@ -115,7 +115,7 @@ public class WorkFileManager {
                 writer = new FileWriter(objFile);
                 writer.write(of.object);
             } finally {
-                IOUtil.safeClose(writer);
+                IOUtils.closeQuietly(writer);
             }
         }
 
