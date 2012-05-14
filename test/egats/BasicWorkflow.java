@@ -29,11 +29,11 @@ public class BasicWorkflow extends AbstractWorkflow {
     @Override
     public void runWorkflow() throws Exception {
         // Submit the first process
-        EGATSProcess p1 = submitProcess("egats.BasicWorkflow.fakeEGATProcess", new String[]{getArgs().get(0), getArgs().get(1)});
+        EGATSProcess p1 = submitProcess("Process 1", "egats.BasicWorkflow.fakeEGATProcess", new String[]{getArgs().get(0), getArgs().get(1)});
         // Wait for the first process to finish
         waitForProcessToFinish(p1);
         // The output of the first run is used as the input to the next run
-        EGATSProcess p2 = submitProcess("egats.BasicWorkflow.fakeEGATProcess", new String[]{p1.getOutputID(), getArgs().get(1)});
+        EGATSProcess p2 = submitProcess("Process 2", "egats.BasicWorkflow.fakeEGATProcess", new String[]{p1.getOutputID(), getArgs().get(1)});
         // Wait for the second process to finish
         waitForProcessToFinish(p2);
     }

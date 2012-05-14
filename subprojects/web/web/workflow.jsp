@@ -44,6 +44,32 @@ if (request.getParameter("id") != null) {
                 <td><%=Util.getString(o.getStatus())%></td>
             </tr>
             <tr>
+                <td>Processes</td>
+                <td>
+                <%
+                if (o.getProcessCount() > 0) {
+                    List<String> processIDs = o.getProcesses();
+                    List<EGATSProcess> processes = API.getProcesses(processIDs);
+                    %><ol><%
+                    for (EGATSProcess p : processes) {
+                        %>
+                        <li><a href="process.jsp?id=<%=p.getID()%>">
+                            <% if (p.getName() != null && !p.getName().equals("")) { %>
+                                <%=p.getName()%>
+                            <% } else { %>
+                                <%=p.getID()%>
+                            <% } %>
+                        </a></li>
+                        <%
+                    }
+                    %></ol><%
+                } else {
+                    %>None<%
+                }
+                %>
+                </td>
+            </tr>
+            <tr>
                 <td>Created</td>
                 <td><%=Util.getDate(o.getCreateTime())%></td>
             </tr>

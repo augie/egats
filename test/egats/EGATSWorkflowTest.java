@@ -28,10 +28,10 @@ public class EGATSWorkflowTest extends EGATSTestCase {
         
         // Create the workflow
         EGATSWorkflow o = new EGATSWorkflow();
-        o.setServer(getServer());
         o.setClassPath("egats.BasicWorkflow");
         o.setArgs(new String[]{arg1Obj.getID(), arg2Obj.getID()});
-        o.run();
+        String id = API.createWorkflow(o);
+        o = EGATSWorkflow.CACHE.get(id);
         
         // Wait for the workflow to finish
         while (o.getFinishTime() == null) {
@@ -46,7 +46,7 @@ public class EGATSWorkflowTest extends EGATSTestCase {
         
         // Check the output of each process
         // Get the first process
-        EGATSProcess p1 = o.getProcess(0);
+        EGATSProcess p1 = EGATSProcess.CACHE.get(o.getProcesses().get(0));
         
         // Should have not been an error
         assertNull(p1.getExceptionMessage());
@@ -59,7 +59,7 @@ public class EGATSWorkflowTest extends EGATSTestCase {
         assertEquals(Data.GSON.toJson(intermediateExpectedOutput), o1.getObject());
         
         // Get the second process
-        EGATSProcess p2 = o.getProcess(1);
+        EGATSProcess p2 = EGATSProcess.CACHE.get(o.getProcesses().get(1));
         
         // Should have not been an error
         assertNull(p2.getExceptionMessage());

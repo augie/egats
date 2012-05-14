@@ -52,7 +52,7 @@ public abstract class AbstractWorkflow {
      * @return
      * @throws Exception 
      */
-    protected final EGATSProcess submitProcess(String methodPath, String[] args) throws Exception {
+    protected final EGATSProcess submitProcess(String name, String methodPath, String[] args) throws Exception {
         // Checks
         if (server == null) {
             throw new NullPointerException("Server is null.");
@@ -69,6 +69,7 @@ public abstract class AbstractWorkflow {
 
         // Create the process and set required parameters
         EGATSProcess process = new EGATSProcess();
+        process.setName(name);
         process.setMethodPath(methodPath);
         process.setArgs(args);
 

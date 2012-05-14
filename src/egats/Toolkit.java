@@ -145,7 +145,7 @@ public class Toolkit {
             if (file.getName().toLowerCase().endsWith(".py")) {
                 // Independent of the location of the toolkit directory
                 String pyScript = file.getAbsolutePath().replace(toolkitDir.getAbsolutePath() + File.separator, "");
-                pyScripts.add(pyScript);
+                pyScripts.add(pyScript.replace("\\", "/"));
             }
         } // It's a directory
         else {

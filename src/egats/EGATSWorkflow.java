@@ -248,15 +248,14 @@ public class EGATSWorkflow extends DataObject implements Runnable {
         this.status = status;
         put("status", status);
     }
-    
+
     /**
      * 
-     * @param index
      * @return
      * @throws Exception 
      */
-    public EGATSProcess getProcess(int index) throws Exception {
-        return EGATSProcess.CACHE.get(processIDs.get(index));
+    public List<String> getProcesses() throws Exception {
+        return processIDs;
     }
 
     /**
@@ -266,7 +265,7 @@ public class EGATSWorkflow extends DataObject implements Runnable {
     public int getProcessCount() {
         return processIDs.size();
     }
-    
+
     /**
      * 
      * @param processIDs 
