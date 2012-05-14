@@ -5,11 +5,10 @@ try {
     String folder = request.getParameter("folder");
     String param = request.getParameter("param");
     String body = request.getParameter("body");
-
     if (method.equals("GET")) {
-        out.print(Util.send(API.HOST + folder + param));
+        out.print(API.send(API.getURL(folder, param)));
     } else if (method.equals("POST")) {
-        out.print(Util.send(API.HOST + folder, body));
+        out.print(API.send(API.getURL(folder), body));
     }
 } catch (Exception e) {
     out.print(e.getMessage());

@@ -10,6 +10,7 @@ from Nash import *
 from sys import argv
 from os.path import abspath
 from argparse import ArgumentParser
+from copy import deepcopy
 
 
 def parse_args():
@@ -35,6 +36,7 @@ def parse_args():
 def main(input_game, args):
 	print "input game =", abspath(args.file), "\n", input_game, "\n\n"
 
+
 	#iterated elimination of dominated strategies
 	rational_game = IteratedElimination(input_game, PureStrategyDominance)
 	eliminated = {r:sorted(set(input_game.strategies[r]) - set( \
@@ -43,7 +45,7 @@ def main(input_game, args):
 		print "dominated strategies:"
 		for r in rational_game.roles:
 			if eliminated[r]:
-				print r, ":", list_repr(eliminated[r])
+				print r, ":", ", ".join(eliminated[r])
 
 	#pure strategy Nash equilibrium search
 	pure_equilibria = PureNash(rational_game, args.r)
@@ -54,7 +56,7 @@ def main(input_game, args):
 		for i, eq in enumerate(pure_equilibria):
 			print str(i+1) + ". regret =", round(regret(input_game, eq), 4)
 			for role in input_game.roles:
-				print "    " + role + ":", list_repr(map(lambda pair: \
+				print "    " + role + ":", ", ".join(map(lambda pair: \
 						str(pair[1]) + "x " + str(pair[0]), eq[role].items()))
 	else:
 		print "\nno pure strategy Nash equilibria found."
@@ -63,7 +65,7 @@ def main(input_game, args):
 		print "minimum regret pure strategy profile (regret = " + \
 				str(round(regret(input_game, mrp), 4)) + "):"
 		for role in input_game.roles:
-			print "    " + role + ":", list_repr(map(lambda pair: \
+			print "    " + role + ":", ", ".join(map(lambda pair: \
 					str(pair[1]) + "x " + str(pair[0]), mrp[role].items()))
 
 	#find maximal subgames
@@ -78,9 +80,9 @@ def main(input_game, args):
 
 	#mixed strategy Nash equilibrium search
 	for i, subgame in enumerate(maximal_subgames):
-		print "\nsubgame "+str(i+1)+":\n", list_repr(map(lambda x: x[0] + \
-				":\n\t\t" + list_repr(x[1], sep="\n\t\t"), sorted( \
-				subgame.strategies.items())), "\n").expandtabs(4)
+		print "\nsubgame "+str(i+1)+":\n", "\n".join(map(lambda x: x[0] + \
+				":\n\t\t" + "\n\t\t".join(x[1]), sorted( \
+				subgame.strategies.items()))).expandtabs(4)
 		mixed_equilibria = MixedNash(subgame, args.r, args.d, iters=args.i, \
 			converge_thresh=args.c)
 		print "\n" + str(len(mixed_equilibria)), "approximate mixed strategy"+ \
@@ -96,24 +98,32 @@ def main(input_game, args):
 				print str(j+1) + ". regret >=", round(regret(input_game,  \
 						full_eq, bound=True), 4)
 
+			support = {r:[] for r in input_game.roles}
 			for k,role in enumerate(input_game.roles):
 				print role + ":"
 				for l,strategy in enumerate(input_game.strategies[role]):
 					if full_eq[k][l] >= args.s:
+						support[role].append(strategy)
 						print "    " + strategy + ": " + str(round(100 * \
 								full_eq[k][l], 2)) + "%"
 
 			BR = bestResponses(input_game, full_eq)
 			print "best responses:"
 			for role in input_game.roles:
+				deviation_support = deepcopy(support)
+				deviation_support[role].extend(BR[role][0])
 				if len(BR[role][0]) == 0:
 					continue
 				r = regret(input_game, full_eq, role, deviation=BR[role][0][0])
-				print "\t" + str(role) + ": " + list_repr(BR[role][0]) + \
+				print "\t" + str(role) + ": " + ", ".join(BR[role][0]) + \
 						";\tgain =", (round(r, 4) if not isinf(r) else "?")
+				print "Deviation subgame " + ("explored." if Subgame( \
+						input_game, deviation_support).isComplete() else \
+						"UNEXPLORED!") + "\n"
 
 
 if __name__ == "__main__":
-	print "command: " + list_repr(argv, sep=" ") + "\n"
+	print "command: " + " ".join(argv) + "\n"
 	game, args = parse_args()
+#	game = HierarchicalReduction(game, {"All":4})
 	main(game, args)

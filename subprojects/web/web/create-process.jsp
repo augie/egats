@@ -55,7 +55,7 @@ if (request.getMethod().equals("POST")) {
                     for (FileItem fileItem : fileItems) {
                         if (fileItem.getFieldName().equals("arg" + argID)) {
                             // Upload the object
-                            String argObjID = API.createObjectFile(fileItem.getName(), IOUtil.readInputStream(fileItem.getInputStream()));
+                            String argObjID = API.createObjectFile(fileItem.getName(), IOUtils.toString(fileItem.getInputStream()));
                             // Set the arg
                             args.add("egats-obj-file:" + argObjID);
                             break;
@@ -70,22 +70,29 @@ if (request.getMethod().equals("POST")) {
                 } else {
                     for (FileItem fileItem : fileItems) {
                         if (fileItem.getFieldName().equals("arg" + argID)) {
-                            object = IOUtil.readInputStream(fileItem.getInputStream());
+                            object = IOUtils.toString(fileItem.getInputStream());
                             break;
                         }
                     }
                 }
                 
                 // Create the object
-                String id = API.createObject(classPath, object);
+                EGATSObject egatsObject = new EGATSObject();
+                egatsObject.setClassPath(classPath);
+                egatsObject.setObject(object);
+                String id = API.createObject(egatsObject);
                 
                 // Set the argument
                 args.add(id);
             }
         }
         
-        // Create an EGAT process to run
-        String id = API.createProcess(name, process, args.toArray(new String[0]));
+        // Create a process to run
+        EGATSProcess egatsProcess = new EGATSProcess();
+        egatsProcess.setName(name);
+        egatsProcess.setMethodPath(process);
+        egatsProcess.setArgs(args.toArray(new String[0]));
+        String id = API.createProcess(egatsProcess);
 
         // Redirect the user to the process page
         %>

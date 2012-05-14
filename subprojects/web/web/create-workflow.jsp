@@ -54,21 +54,28 @@ if (request.getMethod().equals("POST")) {
             } else {
                 for (FileItem fileItem : fileItems) {
                     if (fileItem.getFieldName().equals("arg" + argID)) {
-                        object = IOUtil.readInputStream(fileItem.getInputStream());
+                        object = IOUtils.toString(fileItem.getInputStream());
                         break;
                     }
                 }
             }
 
             // Create the object
-            String id = API.createObject(classPath, object);
+            EGATSObject egatsObject = new EGATSObject();
+            egatsObject.setClassPath(classPath);
+            egatsObject.setObject(object);
+            String id = API.createObject(egatsObject);
 
             // Set the argument
             args.add(id);
         }
         
-        // Create an EGAT process to run
-        String id = API.createWorkflow(name, workflow, args.toArray(new String[0]));
+        // Create a workflow to run
+        EGATSWorkflow egatsWorkflow = new EGATSWorkflow();
+        egatsWorkflow.setName(name);
+        egatsWorkflow.setClassPath(workflow);
+        egatsWorkflow.setArgs(args.toArray(new String[0]));
+        String id = API.createWorkflow(egatsWorkflow);
 
         // Redirect the user to the process page
         %>

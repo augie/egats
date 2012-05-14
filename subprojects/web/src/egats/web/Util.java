@@ -4,7 +4,7 @@ import java.util.Date;
 
 /**
  *
- * @author Augie
+ * @author Augie Hill - augie@umich.edu
  */
 public class Util {
 
