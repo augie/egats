@@ -73,6 +73,8 @@ public class EGATSProcess extends DataObject implements Runnable {
 
                 // Execute
                 StringBuilder command = new StringBuilder();
+                // To run python on Windows (which is what I'm running when I test)
+//                command.append("C:/Windows/System32/cmd.exe /c C:/Python32/python.exe ");
                 command.append("python ");
                 command.append(server.getToolkit().getToolkitDirectoryPath());
                 command.append(File.separator);
