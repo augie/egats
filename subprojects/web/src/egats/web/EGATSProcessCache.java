@@ -1,5 +1,6 @@
 package egats.web;
 
+import egats.API;
 import egats.EGATSProcess;
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
@@ -47,6 +48,6 @@ public class EGATSProcessCache {
      * @throws Exception 
      */
     public static List<EGATSProcess> get() throws Exception {
-        return API.getProcesses((long) 0);
+        return API.getProcessesByTimestamp(0l);
     }
 }

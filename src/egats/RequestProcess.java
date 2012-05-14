@@ -98,9 +98,9 @@ public class RequestProcess implements Runnable {
      * 
      */
     private void safeClose() {
-        IOUtil.safeClose(br);
-        IOUtil.safeClose(dos);
-        IOUtil.safeClose(socket);
+        IOUtils.closeQuietly(br);
+        IOUtils.closeQuietly(dos);
+        IOUtils.closeQuietly(socket);
     }
 
     /**
@@ -167,10 +167,10 @@ public class RequestProcess implements Runnable {
      */
     private void processGet(String object, String header, StringTokenizer requestTokenizer) throws Exception {
         // Ping
-        if (object.startsWith("/ping")) {
+        if (object.startsWith(API.PING)) {
             send("");
         } // Mirrors the request back to the requester. Human-oriented.
-        else if (object.startsWith("/mirror")) {
+        else if (object.startsWith(API.MIRROR)) {
             StringBuilder output = new StringBuilder();
             output.append(header);
             output.append("\n");
@@ -181,7 +181,7 @@ public class RequestProcess implements Runnable {
             }
             send(output.toString());
         } // Reloads the toolkit
-        else if (object.startsWith("/reloadlibs") || object.startsWith("/reloadtoolkit") || object.startsWith("/refresh")) {
+        else if (object.startsWith(API.REFRESH) || object.startsWith("/reloadlibs") || object.startsWith("/reloadtoolkit")) {
             Response response = null;
             try {
                 server.getToolkit().load();
@@ -196,7 +196,7 @@ public class RequestProcess implements Runnable {
             }
             send(response);
         } // Processes
-        else if (object.startsWith("/p/")) {
+        else if (object.startsWith(API.PROCESSES_FOLDER)) {
             String ids = object.substring(3);
             Response response = null;
             try {
@@ -229,7 +229,7 @@ public class RequestProcess implements Runnable {
             }
             send(response);
         } // Processes by timestamp
-        else if (object.startsWith("/pt/")) {
+        else if (object.startsWith(API.PROCESSES_BY_TIMESTAMP_FOLDER)) {
             Long createTime = null;
             Response response = null;
             try {
@@ -248,7 +248,7 @@ public class RequestProcess implements Runnable {
             }
             send(response);
         } // Objects
-        else if (object.startsWith("/o/")) {
+        else if (object.startsWith(API.OBJECTS_FOLDER)) {
             String ids = object.substring(3);
             Response response = null;
             try {
@@ -281,7 +281,7 @@ public class RequestProcess implements Runnable {
             }
             send(response);
         } // Workflows
-        else if (object.startsWith("/w/")) {
+        else if (object.startsWith(API.WORKFLOWS_FOLDER)) {
             String ids = object.substring(3);
             Response response = null;
             try {
@@ -314,7 +314,7 @@ public class RequestProcess implements Runnable {
             }
             send(response);
         } // Workflows by timestamp
-        else if (object.startsWith("/wt/")) {
+        else if (object.startsWith(API.WORKFLOWS_BY_TIMESTAMP_FOLDER)) {
             Long createTime = null;
             Response response = null;
             try {
@@ -333,7 +333,7 @@ public class RequestProcess implements Runnable {
             }
             send(response);
         } // Response with the list of scripts in the toolkit.
-        else if (object.equals("/t") || object.equals("/t/")) {
+        else if (object.startsWith(API.TOOLKIT_FOLDER)) {
             Response response = new Response(Response.STATUS_CODE_OK,
                     "The body of this message contains the list of approved tools.",
                     JSON.serialize(server.getToolkit().getTools()));
@@ -366,8 +366,11 @@ public class RequestProcess implements Runnable {
             body.append((char) br.read());
         }
 
-        // Mirrors the request back to the requester. Human-oriented.
-        if (object.startsWith("/mirror")) {
+        // Ping
+        if (object.startsWith(API.PING)) {
+            send("");
+        } // Mirrors the request back to the requester. Human-oriented.
+        else if (object.startsWith(API.MIRROR)) {
             StringBuilder output = new StringBuilder();
             output.append(header);
             output.append("\n");
@@ -380,8 +383,8 @@ public class RequestProcess implements Runnable {
             output.append("\n");
             output.append(body);
             send(output.toString());
-        } // Create new processes
-        else if (object.startsWith("/p")) {
+        } // Processes
+        else if (object.startsWith(API.PROCESSES_FOLDER)) {
             Response response = null;
             try {
                 // The body is an EGATSProcess list
@@ -412,8 +415,8 @@ public class RequestProcess implements Runnable {
             }
             // Respond with the new ID
             send(response);
-        } // Create new objects
-        else if (object.startsWith("/o")) {
+        } // Objects
+        else if (object.startsWith(API.OBJECTS_FOLDER)) {
             Response response = null;
             try {
                 // The body is an EGATSObject list
@@ -440,7 +443,7 @@ public class RequestProcess implements Runnable {
             // Respond with the new ID
             send(response);
         } // Create new workflows
-        else if (object.startsWith("/w")) {
+        else if (object.startsWith(API.WORKFLOWS_FOLDER)) {
             Response response = null;
             try {
                 // The body is an EGATSObject list

@@ -22,8 +22,7 @@ public class RequestProcessTest extends EGATSTestCase {
         oList.add(o);
 
         // Create on the server and get a response
-        String responseJSON = send(server.getURL("/w"), JSON.serialize(oList));
-        Response response = Response.fromJSON(responseJSON);
+        Response response = API.send(API.getURL(API.WORKFLOWS_FOLDER), JSON.serialize(oList));
 
         // Check response code
         assertEquals(Response.STATUS_CODE_OK, response.getStatusCode());
@@ -47,8 +46,7 @@ public class RequestProcessTest extends EGATSTestCase {
         oList.add(o);
 
         // Create on the server and get a response
-        String responseJSON = send(server.getURL("/p"), JSON.serialize(oList));
-        Response response = Response.fromJSON(responseJSON);
+        Response response = API.send(API.getURL(API.PROCESSES_FOLDER), JSON.serialize(oList));
 
         // Check response code
         assertEquals(Response.STATUS_CODE_OK, response.getStatusCode());
@@ -72,8 +70,7 @@ public class RequestProcessTest extends EGATSTestCase {
         oList.add(o);
 
         // Createon the server and get a response
-        String responseJSON = send(server.getURL("/o"), JSON.serialize(oList));
-        Response response = Response.fromJSON(responseJSON);
+        Response response = API.send(API.getURL(API.OBJECTS_FOLDER), JSON.serialize(oList));
 
         // Check response code
         assertEquals(Response.STATUS_CODE_OK, response.getStatusCode());
@@ -98,8 +95,7 @@ public class RequestProcessTest extends EGATSTestCase {
         oList.add(o);
 
         // Create on the server and get a response
-        String responseJSON = send(server.getURL("/w"), JSON.serialize(oList));
-        Response response = Response.fromJSON(responseJSON);
+        Response response = API.send(API.getURL(API.WORKFLOWS_FOLDER), JSON.serialize(oList));
 
         // Check response code
         assertEquals(Response.STATUS_CODE_OK, response.getStatusCode());
@@ -109,8 +105,7 @@ public class RequestProcessTest extends EGATSTestCase {
         assertEquals(1, IDs.size());
 
         // Check that you can fetch from the server
-        responseJSON = send(server.getURL("/w/" + IDs.get(0)));
-        response = Response.fromJSON(responseJSON);
+        response = API.send(API.getURL(API.WORKFLOWS_FOLDER, IDs.get(0)));
 
         // Check response code
         assertEquals(Response.STATUS_CODE_OK, response.getStatusCode());
@@ -132,14 +127,13 @@ public class RequestProcessTest extends EGATSTestCase {
         o.setMethodPath("method path");
         o.setName("name");
         o.setArgs(new String[]{"arg"});
-        
+
         // Put into a list
         List<EGATSProcess> oList = new LinkedList<EGATSProcess>();
         oList.add(o);
 
         // Create on the server and get a response
-        String responseJSON = send(server.getURL("/p"), JSON.serialize(oList));
-        Response response = Response.fromJSON(responseJSON);
+        Response response = API.send(API.getURL(API.PROCESSES_FOLDER), JSON.serialize(oList));
 
         // Check response code
         assertEquals(Response.STATUS_CODE_OK, response.getStatusCode());
@@ -149,16 +143,15 @@ public class RequestProcessTest extends EGATSTestCase {
         assertEquals(1, IDs.size());
 
         // Check that you can fetch from the server
-        responseJSON = send(server.getURL("/p/" + IDs.get(0)));
-        response = Response.fromJSON(responseJSON);
-        
+        response = API.send(API.getURL(API.PROCESSES_FOLDER, IDs.get(0)));
+
         // Check response code
         assertEquals(Response.STATUS_CODE_OK, response.getStatusCode());
-        
+
         // Read the response
         List<Object> egatsProcesses = (List<Object>) JSON.parse(response.getBody());
         assertEquals(1, egatsProcesses.size());
-        
+
         // Check the process (serializing to JSON is a lazy hack)
         EGATSProcess getO = EGATSProcess.read(JSON.serialize(egatsProcesses.get(0)));
         assertEquals(o.getMethodPath(), getO.getMethodPath());
@@ -175,11 +168,10 @@ public class RequestProcessTest extends EGATSTestCase {
         // Put into a list
         List<EGATSObject> oList = new LinkedList<EGATSObject>();
         oList.add(o);
-        
+
         // Create the object on the server and get a response
-        String responseJSON = send(server.getURL("/o"), JSON.serialize(oList));
-        Response response = Response.fromJSON(responseJSON);
-        
+        Response response = API.send(API.getURL(API.OBJECTS_FOLDER), JSON.serialize(oList));
+
         // Check response code
         assertEquals(Response.STATUS_CODE_OK, response.getStatusCode());
 
@@ -188,16 +180,15 @@ public class RequestProcessTest extends EGATSTestCase {
         assertEquals(1, IDs.size());
 
         // Check that you can fetch from the server
-        responseJSON = send(server.getURL("/o/" + IDs.get(0)));
-        response = Response.fromJSON(responseJSON);
-        
+        response = API.send(API.getURL(API.OBJECTS_FOLDER, IDs.get(0)));
+
         // Check response code
         assertEquals(Response.STATUS_CODE_OK, response.getStatusCode());
-        
+
         // Read the response
         List<Object> egatsObjects = (List<Object>) JSON.parse(response.getBody());
         assertEquals(1, egatsObjects.size());
-        
+
         // Check the object (serializing to JSON is a lazy hack)
         EGATSObject getO = EGATSObject.read(JSON.serialize(egatsObjects.get(0)));
         assertEquals(o.getClassPath(), getO.getClassPath());

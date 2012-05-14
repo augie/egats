@@ -45,7 +45,7 @@ public class StreamToBufferThread extends Thread {
             // Log the exception
             // TODO
         } finally {
-            IOUtil.safeClose(reader);
+            IOUtils.closeQuietly(reader);
         }
     }
 }

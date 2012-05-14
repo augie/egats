@@ -31,25 +31,7 @@ public class EGATSWorkflow extends DataObject implements Runnable {
     private String name;
     private String[] args;
     private String classPath;
-    private List<String> processIDs = new ArrayList<String>();
-
-    /**
-     * 
-     * @param index
-     * @return
-     * @throws Exception 
-     */
-    public EGATSProcess getProcess(int index) throws Exception {
-        return EGATSProcess.CACHE.get(processIDs.get(index));
-    }
-
-    /**
-     * 
-     * @return 
-     */
-    public int getProcessCount() {
-        return processIDs.size();
-    }
+    private List<String> processIDs;
 
     /**
      * 
@@ -100,7 +82,7 @@ public class EGATSWorkflow extends DataObject implements Runnable {
             } else if (e instanceof NoSuchMethodException) {
                 setExceptionMessage("No such method.");
             } else {
-                setExceptionMessage(e.getMessage());
+                setExceptionMessage(e.toString());
             }
             setStatus(STATUS_FAILED);
         } finally {
@@ -266,6 +248,33 @@ public class EGATSWorkflow extends DataObject implements Runnable {
         this.status = status;
         put("status", status);
     }
+    
+    /**
+     * 
+     * @param index
+     * @return
+     * @throws Exception 
+     */
+    public EGATSProcess getProcess(int index) throws Exception {
+        return EGATSProcess.CACHE.get(processIDs.get(index));
+    }
+
+    /**
+     * 
+     * @return 
+     */
+    public int getProcessCount() {
+        return processIDs.size();
+    }
+    
+    /**
+     * 
+     * @param processIDs 
+     */
+    private void setProcessIDs(List<String> processIDs) {
+        this.processIDs = processIDs;
+        put("processIDs", processIDs);
+    }
 
     /**
      * 
@@ -335,6 +344,7 @@ public class EGATSWorkflow extends DataObject implements Runnable {
         o.removeField("exceptionMessage");
         o.removeField("startTime");
         o.removeField("finishTime");
+        o.setProcessIDs(new ArrayList<String>());
         // Create a new entry in the database
         o.save();
         // Add it to the cache now because it will probably be referenced soon
@@ -367,6 +377,7 @@ public class EGATSWorkflow extends DataObject implements Runnable {
         o.setStatus(o.getString("status"));
         o.setExceptionMessage(o.getString("exceptionMessage"));
         o.setStartTime(o.getLong("startTime"));
+        o.setProcessIDs((List<String>) o.get("processIDs"));
         if (o.containsField("finishTime")) {
             o.setFinishTime(o.getLong("finishTime"));
         }

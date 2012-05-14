@@ -2,7 +2,7 @@ package egats;
 
 /**
  *
- * @author Augie
+ * @author Augie Hill - augie@umich.edu
  */
 public class BasicWorkflow extends AbstractWorkflow {
 

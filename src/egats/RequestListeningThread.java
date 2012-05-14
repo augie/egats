@@ -12,13 +12,14 @@ import java.util.concurrent.Future;
  */
 public class RequestListeningThread extends Thread {
 
+    public static final Integer DEFAULT_PORT = 55555;
     private Server server;
     private Integer port;
     private ServerSocket ss;
     private boolean run = true;
 
     static {
-        Flags.setDefault(Flags.PORT, 55555);
+        Flags.setDefault(Flags.PORT, DEFAULT_PORT);
     }
 
     /**
@@ -39,7 +40,7 @@ public class RequestListeningThread extends Thread {
         // Stop the listener
         run = false;
         // Close the server listener so it returns
-        IOUtil.safeClose(ss);
+        IOUtils.closeQuietly(ss);
     }
 
     /**
@@ -68,7 +69,7 @@ public class RequestListeningThread extends Thread {
                 // Do we need to create a new socket?
                 if (ss == null || ss.isClosed()) {
                     // Close the old socket if there is one.
-                    IOUtil.safeClose(ss);
+                    IOUtils.closeQuietly(ss);
                     // Log the creation of a new ServerSocket
                     // TODO
                     // Create the new socket.
