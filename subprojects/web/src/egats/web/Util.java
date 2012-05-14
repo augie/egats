@@ -8,8 +8,8 @@ import java.util.Date;
  */
 public class Util {
 
-//    public static final String HOST = "egat.eecs.umich.edu:55555";
-    public static final String HOST = "localhost:55555";
+    public static final String HOST = "egat.eecs.umich.edu:55555";
+//    public static final String HOST = "localhost:55555";
 
     /**
      * 

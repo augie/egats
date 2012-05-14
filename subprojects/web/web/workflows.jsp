@@ -3,6 +3,7 @@
 <div class="workflows">
 <%    
 List<EGATSWorkflow> list = EGATSWorkflowCache.get();
+Collections.reverse(list);
 for (EGATSWorkflow w : list) {
     %>
     <div class="workflow">

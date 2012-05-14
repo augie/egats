@@ -3,6 +3,7 @@
 <div class="processes">
 <%    
 List<EGATSProcess> list = EGATSProcessCache.get();
+Collections.reverse(list);
 for (EGATSProcess p : list) {
     %>
     <div class="process">
