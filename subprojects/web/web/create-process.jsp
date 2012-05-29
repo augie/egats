@@ -1,4 +1,5 @@
 <%@page import="org.apache.commons.fileupload.*, org.apache.commons.fileupload.servlet.*, org.apache.commons.fileupload.disk.*, org.apache.commons.fileupload.util.*" %>
+<%@page import="java.io.IOException, org.apache.http.client.ClientProtocolException, org.apache.http.client.HttpClient, org.apache.http.client.ResponseHandler, org.apache.http.client.methods.HttpGet, org.apache.http.impl.client.BasicResponseHandler, org.apache.http.impl.client.DefaultHttpClient" %>
 <%@include file="inc/header.jsp" %>
 <h2>New Process</h2>
 <%
@@ -87,6 +88,11 @@ if (request.getMethod().equals("POST")) {
             }
         }
         
+        if(session.getAttribute("json_file").toString()!="no-response"){
+         String argObjID = API.createObjectFile(session.getAttribute("json_name").toString(), session.getAttribute("json_file").toString());
+         args.add("egats-obj-file:" + argObjID);
+         }
+        
         // Create a process to run
         EGATSProcess egatsProcess = new EGATSProcess();
         egatsProcess.setName(name);
@@ -108,6 +114,22 @@ if (request.getMethod().equals("POST")) {
 if (request.getMethod().equals("GET") || error != null) {
     if (error != null) {
         %><p>The following error occurred:<br/><%=error%></p><%
+    }
+    session.setAttribute("json_file", "no-response");
+    if(request.getQueryString()!=null){
+       HttpClient httpclient = new DefaultHttpClient();
+       try {
+           String objectUrl=request.getQueryString().substring(request.getQueryString().indexOf("objecturl=")+10, request.getQueryString().length());
+           String responseBody = httpclient.execute(new HttpGet(objectUrl), new BasicResponseHandler());
+           session.setAttribute("json_file", responseBody);
+           session.setAttribute("json_name", request.getQueryString().substring(request.getQueryString().indexOf("games/")+6, request.getQueryString().indexOf("?auth_token")));
+                } catch (ClientProtocolException e) {
+		e.printStackTrace();
+                } catch (IOException e) {
+		e.printStackTrace();
+                } finally {
+                 httpclient.getConnectionManager().shutdown();
+                }
     }
     %>
     <script type="text/javascript">
@@ -165,6 +187,7 @@ if (request.getMethod().equals("GET") || error != null) {
             </tr>
             <tr>
                 <td>Process</td>
+                
                 <td>
                     <select id="process" name="process" onchange="changedProcess()">
                         <option value=""></option>
@@ -177,15 +200,19 @@ if (request.getMethod().equals("GET") || error != null) {
             <tr>
                 <td>
                     Args<br/>
-                    <button id="addArg" onclick="addArgInput()" type="button" disabled>+ Arg</button><br/>
+                    <button id="addArg" onclick="addArgInput()" type="button" disabled>+ Arg</button> <br/>
                     <button id="addFile" onclick="addFileArgInput()" type="button" disabled>+ File</button><br/>
                     <button onclick="resetArgs()" type="button">Reset</button>
                 </td>
                 <td>
+                    <% if (session.getAttribute("json_file").toString()=="no-response") { %>
+                    <% } else { %>
+                    Downloaded Object From: <%=request.getQueryString().substring(request.getQueryString().indexOf("objecturl=")+10, request.getQueryString().indexOf("?auth_token"))%>
+                    <% } %>
                     <input id="argCount" name="argCount" type="hidden" value="0" />
                     <div id="args">
                         <i>Select a process.</i>
-                    </div>
+                  </div>
                 </td>
             </tr>
             <tr><td colspan="2"><button type="submit">Submit</button></td></tr>
