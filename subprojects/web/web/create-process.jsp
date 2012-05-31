@@ -1,4 +1,4 @@
-<%@page import="org.apache.commons.fileupload.*, org.apache.commons.fileupload.servlet.*, org.apache.commons.fileupload.disk.*, org.apache.commons.fileupload.util.*" %>
+<%@page import="org.apache.commons.fileupload.*, org.apache.commons.fileupload.servlet.*, org.apache.commons.fileupload.disk.*, org.apache.commons.fileupload.util.*,java.net.URL " %>
 <%@include file="inc/header.jsp" %>
 <h2>New Process</h2>
 <%
@@ -87,6 +87,16 @@ if (request.getMethod().equals("POST")) {
             }
         }
         
+        
+        // Read the args from EGTAOnline
+        String url = formFields.get("urlJson");
+        if( url.startsWith("http") ) {
+           String json_file = IOUtils.toString(new URL(url));
+           String json_name=url.substring(url.indexOf("games/")+6, url.indexOf("?auth_token"));
+           String argObjID = API.createObjectFile(json_name,json_file);
+           args.add("egats-obj-file:" + argObjID);
+        }
+     
         // Create a process to run
         EGATSProcess egatsProcess = new EGATSProcess();
         egatsProcess.setName(name);
@@ -109,10 +119,11 @@ if (request.getMethod().equals("GET") || error != null) {
     if (error != null) {
         %><p>The following error occurred:<br/><%=error%></p><%
     }
+    String objectURL = request.getParameter("objecturl");
     %>
     <script type="text/javascript">
         var argID = 0;
-        
+       
         function changedProcess() {
             if ($("#process").val() == '') {
                 $("#addArg").attr('disabled', 'disabled');
@@ -182,7 +193,11 @@ if (request.getMethod().equals("GET") || error != null) {
                     <button onclick="resetArgs()" type="button">Reset</button>
                 </td>
                 <td>
+                    <% if (objectURL != null) { %>
+                           Downloaded Object From: <%=objectURL%>
+                    <% } %>
                     <input id="argCount" name="argCount" type="hidden" value="0" />
+                    <input id="urlJson" name="urlJson" type="hidden" value="<%=objectURL%>" />
                     <div id="args">
                         <i>Select a process.</i>
                     </div>
