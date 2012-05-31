@@ -13,8 +13,7 @@ import org.bson.types.ObjectId;
 
 /**
  * Data structure for caching generic objects retrieved from the database.
- * Uses soft references, so the cache will fill memory only as it is available.
- * 
+ * Uses soft references so the cache will fill memory only as it is available.
  * @author Augie Hill - augie@umich.edu
  */
 public class DataObjectCache<T extends DataObject> {

@@ -161,7 +161,7 @@ if (request.getMethod().equals("GET") || error != null) {
         <table>
             <tr>
                 <td width="15%">Name</td>
-                <td><input name="name" type="text"/></td>
+                <td><input name="name" type="text" value="<%= (request.getParameter("name") != null ? request.getParameter("name") : "") %>"/></td>
             </tr>
             <tr>
                 <td>Process</td>

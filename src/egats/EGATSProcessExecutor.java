@@ -6,7 +6,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
+ * Manages the execution of processes.
  * @author Augie Hill - augie@umich.edu
  */
 public class EGATSProcessExecutor extends ThreadPoolExecutor {

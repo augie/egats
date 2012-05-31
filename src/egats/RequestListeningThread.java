@@ -7,7 +7,8 @@ import java.net.SocketException;
 import java.util.concurrent.Future;
 
 /**
- *
+ * Binds to a server socket and listens for requests.
+ * Requests are submitted to the request process executor.
  * @author Augie Hill - augie@umich.edu
  */
 public class RequestListeningThread extends Thread {

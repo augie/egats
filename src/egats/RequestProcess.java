@@ -13,7 +13,9 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
- *
+ * Processes a request (duh). 
+ * Meant to be executed only once.
+ * Parses GET/POST HTTP requests and responds accordingly.
  * @author Augie Hill - augie@umich.edu
  */
 public class RequestProcess implements Runnable {

@@ -1,7 +1,7 @@
 package egats;
 
 /**
- *
+ * The main class.
  * @author Augie Hill - augie@umich.edu
  */
 public class Server {

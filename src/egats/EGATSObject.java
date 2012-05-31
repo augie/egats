@@ -5,7 +5,7 @@ import com.mongodb.util.JSON;
 
 /**
  * The nouns.
- * 
+ * Immutable once created.
  * @author Augie Hill - augie@umich.edu
  */
 public class EGATSObject extends DataObject {
@@ -118,7 +118,6 @@ public class EGATSObject extends DataObject {
 
     /**
      * Cleans the object JSON and adds it to the database.
-     * 
      * @param json
      * @return
      * @throws Exception 
@@ -141,7 +140,6 @@ public class EGATSObject extends DataObject {
 
     /**
      * Reads an object already in the database.
-     * 
      * @param json
      * @return
      * @throws Exception 

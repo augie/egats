@@ -1,7 +1,7 @@
 package egats;
 
-/**
- *
+/** 
+ * Wrapper for responses to all requests.
  * @author Augie Hill - augie@umich.edu
  */
 public class Response extends Object {

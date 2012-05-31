@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * Execution flag management.
  * @author Augie Hill - augie@umich.edu
  */
 public class Flags {

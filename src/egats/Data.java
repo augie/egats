@@ -7,7 +7,7 @@ import com.mongodb.Mongo;
 import com.mongodb.WriteResult;
 
 /**
- * Class of static variables and methods for interacting with the database.
+ * Static variables and methods for interacting with the Mongo database.
  * @author Augie Hill - augie@umich.edu
  */
 public class Data {

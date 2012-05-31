@@ -10,8 +10,9 @@ import java.util.List;
 
 /**
  * The sentences.
- * 
- * @author Augie
+ * Workflows combine basic processes, allowing more complex logic and the
+ * ability to save intermediate objects.
+ * @author Augie Hill - augie@umich.edu
  */
 public class EGATSWorkflow extends DataObject implements Runnable {
 
@@ -323,7 +324,7 @@ public class EGATSWorkflow extends DataObject implements Runnable {
     }
 
     /**
-     * 
+     * Cleans the workflow JSON and adds it to the database.
      * @param json
      * @return
      * @throws Exception 
@@ -352,7 +353,7 @@ public class EGATSWorkflow extends DataObject implements Runnable {
     }
 
     /**
-     * 
+     * Reads a workflow already in the database.
      * @param json
      * @return
      * @throws Exception 
@@ -362,7 +363,7 @@ public class EGATSWorkflow extends DataObject implements Runnable {
     }
 
     /**
-     * 
+     * Reads a workflow already in the database.
      * @param dbo
      * @return
      * @throws Exception 

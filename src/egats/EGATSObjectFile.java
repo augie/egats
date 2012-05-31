@@ -2,7 +2,6 @@ package egats;
 
 /**
  * A bit of a hack to incorporate Python.
- * 
  * @author Augie Hill - augie@umich.edu
  */
 public class EGATSObjectFile extends Object {

@@ -11,7 +11,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- *
+ * Provides static methods for communication with remote EGATS server.
+ * Be sure to first call setHost with the domain name and port of the remote
+ * EGATS server.
  * @author Augie Hill - augie@umich.edu
  */
 public class API {

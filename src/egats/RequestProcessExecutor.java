@@ -6,7 +6,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
+ * Manages the execution of requests.
  * @author Augie Hill - augie@umich.edu
  */
 public class RequestProcessExecutor extends ThreadPoolExecutor {

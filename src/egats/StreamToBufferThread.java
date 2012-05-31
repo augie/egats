@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
- *
+ * Used to get the output of Python processes.
  * @author Augie Hill - augie@umich.edu
  */
 public class StreamToBufferThread extends Thread {

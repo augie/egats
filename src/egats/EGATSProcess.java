@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 
 /**
  * The verbs.
- * 
+ * Acts upon objects to produce new objects.
  * @author Augie Hill - augie@umich.edu
  */
 public class EGATSProcess extends DataObject implements Runnable {
@@ -418,7 +418,7 @@ public class EGATSProcess extends DataObject implements Runnable {
     }
 
     /**
-     * 
+     * Cleans the process JSON and adds it to the database.
      * @param json
      * @return
      * @throws Exception 
@@ -446,7 +446,7 @@ public class EGATSProcess extends DataObject implements Runnable {
     }
 
     /**
-     * 
+     * Reads a process already in the database.
      * @param json
      * @return
      * @throws Exception 
@@ -456,7 +456,7 @@ public class EGATSProcess extends DataObject implements Runnable {
     }
 
     /**
-     * 
+     * Reads a process already in the database.
      * @param dbo
      * @return
      * @throws Exception 

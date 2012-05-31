@@ -3,8 +3,8 @@ package egats;
 import java.util.List;
 
 /**
- * The building block for workflows (a pipeline of separate processes). Provides methods which make very easy the
- *  process of creating a workflow.
+ * The building block for workflows (a pipeline of separate processes). Provides
+ * methods which make very easy the process of creating a workflow.
  * @author Augie Hill - augie@umich.edu
  */
 public abstract class AbstractWorkflow {
